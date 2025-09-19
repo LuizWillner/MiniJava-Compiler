@@ -60,7 +60,7 @@ public class Calc {
 
   private static final String ZZ_CMAP_BLOCKS_PACKED_0 =
     "\11\0\2\1\2\2\1\1\22\0\1\1\7\0\1\3"+
-    "\1\4\1\5\1\6\1\0\1\7\1\0\1\10\12\11"+
+    "\1\4\1\5\1\6\1\0\1\7\1\10\1\11\12\12"+
     "\113\0\1\2\u01a2\0\2\2\326\0\u0100\2";
 
   private static int [] zzUnpackcmap_blocks() {
@@ -89,10 +89,10 @@ public class Calc {
 
   private static final String ZZ_ACTION_PACKED_0 =
     "\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7"+
-    "\1\10\1\11";
+    "\1\10\1\11\1\12\1\10\1\0\1\11";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[10];
+    int [] result = new int[14];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -117,11 +117,11 @@ public class Calc {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\12\0\24\0\12\0\12\0\12\0\12\0\12"+
-    "\0\12\0\36";
+    "\0\0\0\13\0\26\0\13\0\13\0\41\0\13\0\13"+
+    "\0\54\0\67\0\13\0\13\0\102\0\115";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[10];
+    int [] result = new int[14];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -145,10 +145,12 @@ public class Calc {
 
   private static final String ZZ_TRANS_PACKED_0 =
     "\1\2\1\3\1\0\1\4\1\5\1\6\1\7\1\10"+
-    "\1\11\1\12\13\0\1\3\21\0\1\12";
+    "\1\2\1\11\1\12\14\0\1\3\16\0\1\13\16\0"+
+    "\1\14\11\0\1\15\1\0\1\12\12\0\1\16\12\0"+
+    "\1\12";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[40];
+    int [] result = new int[88];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -191,10 +193,11 @@ public class Calc {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\1\11\1\1\6\11\1\1";
+    "\1\0\1\11\1\1\2\11\1\1\2\11\2\1\2\11"+
+    "\1\0\1\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[10];
+    int [] result = new int[14];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -272,6 +275,17 @@ public class Calc {
   /** Whether the user-EOF-code has already been executed. */
   @SuppressWarnings("unused")
   private boolean zzEOFDone;
+
+  /* user code: */
+    public class Token {
+      public String type;
+      public String value;
+
+      public Token(String type, String value) {
+          this.type = type;
+          this.value = value;
+      }
+    }
 
 
   /**
@@ -543,7 +557,7 @@ public class Calc {
    * @return the next token.
    * @exception java.io.IOException if any I/O-Error occurs.
    */
-  public String yylex() throws java.io.IOException
+  public Token yylex() throws java.io.IOException
   {
     int zzInput;
     int zzAction;
@@ -628,50 +642,55 @@ public class Calc {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { return "UNKNOWN-TOKEN";
+            { return new Token("UNKNOWN-TOKEN", yytext());
             }
           // fall through
-          case 10: break;
+          case 11: break;
           case 2:
             { /* ignore */
             }
           // fall through
-          case 11: break;
-          case 3:
-            { return "LPAREN";
-            }
-          // fall through
           case 12: break;
-          case 4:
-            { return "RPAREN";
+          case 3:
+            { return new Token("LPAREN", yytext());
             }
           // fall through
           case 13: break;
-          case 5:
-            { return "MULT";
+          case 4:
+            { return new Token("RPAREN", yytext());
             }
           // fall through
           case 14: break;
-          case 6:
-            { return "PLUS";
+          case 5:
+            { return new Token("MULT", yytext());
             }
           // fall through
           case 15: break;
-          case 7:
-            { return "MINUS";
+          case 6:
+            { return new Token("PLUS", yytext());
             }
           // fall through
           case 16: break;
-          case 8:
-            { return "DIV";
+          case 7:
+            { return new Token("MINUS", yytext());
             }
           // fall through
           case 17: break;
-          case 9:
-            { return "NUM";
+          case 8:
+            { return new Token("DIV", yytext());
             }
           // fall through
           case 18: break;
+          case 9:
+            { return new Token("NUMBER", yytext());
+            }
+          // fall through
+          case 19: break;
+          case 10:
+            { return new Token("POW", yytext());
+            }
+          // fall through
+          case 20: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }
