@@ -2,11 +2,11 @@ import java.io.*;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Reader reader = new StringReader("123 abc ? 456");
-        Lexer lexer = new Lexer(reader);
+        Reader reader = new StringReader("123 + 3219");
+        Calc calc = new Calc(reader);
 
         String token;
-        while ((token = lexer.yylex()) != null) {
+        while ((token = calc.yylex()) != null) {
             System.out.println("Token: " + token);
         }
     }
