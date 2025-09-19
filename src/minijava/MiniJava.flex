@@ -1,3 +1,4 @@
+package minijava;
 %%
 
 %class MiniJava
