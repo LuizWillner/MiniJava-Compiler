@@ -18,7 +18,7 @@ public class Main {
 
             Calc.Token token;
             while ((token = calc.yylex()) != null) {
-                System.out.println("Token: " + token.type + ", Value: " + token.value);
+                System.out.println("Token Type: " + token.type + ", Token Value: " + token.value);
             }
         }
     }
