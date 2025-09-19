@@ -8,7 +8,7 @@ Ao fazer alterações em algum arquivo .flex, gere o script do scanner correspon
 ```
 
 ## Testando o scanner
-Compile o arquivo .java com 
+Compile o arquivo .java dentro do diretório desejado (ex.: Calc) com 
 ```shell
 javac *.java
 ```
