@@ -3,6 +3,7 @@ Trabalho da disciplina de Compiladores | prof. Flávia Bernardini | 2025.2 | Ins
 
 ## Gerando script do scanner
 Ao fazer alterações em algum arquivo .flex, gere o script do scanner correspondente
+
 Para a calculadora:
 ```shell
  java -jar tools/jflex-full-1.9.1.jar src/calculator/Calc.flex
