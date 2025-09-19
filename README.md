@@ -1,14 +1,20 @@
 # MiniJava-Compiler
 Trabalho da disciplina de Compiladores | prof. Flávia Bernardini | 2025.2 | Instituto de Computação | Universidade Federal Fluminense
 
+## Escolhendo diretório
+Escolha o diretório do projeto que deseja trabalhar (ex.: Calc, MiniJava, etc) com:
+```shell
+cd nomeDoDiretorio
+```
+
 ## Gerando script do scanner
 Ao fazer alterações em algum arquivo .flex, gere o script do scanner correspondente com:
 ```shell
- java -jar tools/jflex-full-1.9.1.jar nomeDoArquivo.flex 
+ java -jar ../tools/jflex-full-1.9.1.jar nomeDoArquivo.flex 
 ```
 
 ## Testando o scanner
-Compile o arquivo .java dentro do diretório desejado (ex.: Calc) com 
+Compile o arquivo .java com 
 ```shell
 javac *.java
 ```
