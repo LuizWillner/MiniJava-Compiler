@@ -1,13 +1,25 @@
 import java.io.*;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Reader reader = new StringReader("123 + 3219 - 57*(8//2 ** 4)");
-        Calc calc = new Calc(reader);
+        Scanner scanner = new Scanner(System.in);
+        String inputString;
+        while (true) {
+            System.out.print("> ");
+            inputString = scanner.nextLine();
 
-        Calc.Token token;
-        while ((token = calc.yylex()) != null) {
-            System.out.println("Token: " + token.type + ", Value: " + token.value);
+            if (inputString.equals("exit")) {
+                break;
+            }
+
+            Reader reader = new StringReader(inputString);
+            Calc calc = new Calc(reader);
+
+            Calc.Token token;
+            while ((token = calc.yylex()) != null) {
+                System.out.println("Token: " + token.type + ", Value: " + token.value);
+            }
         }
     }
 }
