@@ -1,0 +1,29 @@
+// Teste de operações booleanas e arrays
+
+class TesteArray {
+    public static void main(String[] args) {
+        System.out.println(new ArrayOps().processArray());
+    }
+}
+
+class ArrayOps {
+    public int processArray() {
+        int[] numeros;
+        int tamanho;
+        boolean encontrou;
+        
+        numeros = new int[5];
+        numeros[0] = 10;
+        numeros[1] = 20;
+        numeros[2] = 30;
+        
+        tamanho = numeros.length;
+        encontrou = false;
+        
+        if (numeros[0] < numeros[1] && !encontrou) {
+            encontrou = true;
+        }
+        
+        return tamanho;
+    }
+}

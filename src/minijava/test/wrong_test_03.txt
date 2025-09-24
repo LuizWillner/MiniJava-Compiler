@@ -1,0 +1,16 @@
+// Teste de erro com comentário de bloco não fechado
+
+class TesteComentario {
+    public static void main(String[] args) {
+        System.out.println(new Calc().calcula(15));
+    }
+}
+
+class Calc {
+    public int calcula(int numero) {
+        /* Este é um comentário de bloco que não foi fechado
+           e deve causar um erro no scanner
+        int resultado = numero * 2;
+        return resultado;
+    }
+}

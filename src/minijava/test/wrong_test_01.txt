@@ -1,0 +1,14 @@
+// Teste de erro com caractere inválido
+
+class TesteErro {
+    public static void main(String[] args) {
+        System.out.println(new MultiploDeDez().teste());
+    }
+}
+
+class MultiploDeDez {
+    public int teste() {
+        int numero = 42;
+        return numero @ 10; // Erro
+    }
+}

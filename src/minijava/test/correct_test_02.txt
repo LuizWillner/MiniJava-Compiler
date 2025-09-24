@@ -1,0 +1,38 @@
+// Teste de comentario
+
+class MinhaClasse extends OutraClasse {
+    public static void main(String[] args) {
+        System.out.println(new Exemplo().teste(42));
+    }
+}
+
+class Exemplo {
+    int numero;
+    boolean ativo;
+    
+    public int teste(int valor) {
+        int resultado;
+        boolean condicao;
+        
+        if (valor < 10) {
+            resultado = valor + 5;
+            condicao = true;
+        } else {
+            resultado = valor - 3;
+            condicao = false;
+        }
+        
+        while (resultado < 100 && condicao) {
+            resultado = resultado * 2;
+            if (!condicao) {
+                resultado = this.numero + valor;
+            }
+        }
+        
+        int[] array;
+        array = new int[10];
+        array[0] = resultado;
+        
+        return array.length + array[0];
+    }
+}

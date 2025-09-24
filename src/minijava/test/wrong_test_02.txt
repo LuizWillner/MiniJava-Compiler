@@ -1,0 +1,14 @@
+// Teste de erro com string mal formada
+
+class TesteString {
+    public static void main(String[] args) {
+        System.out.println(new Exemplo().mensagem());
+    }
+}
+
+class Exemplo {
+    public int mensagem() {
+        String texto = "Olá mundo sem fechamento; // Erro
+        return texto;
+    }
+}

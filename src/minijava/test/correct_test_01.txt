@@ -1,0 +1,11 @@
+class Calculadora {
+    public static void main(String[] args) {
+        System.out.println(new Calc().soma(5, 3));
+    }
+}
+
+class Calc {
+    public int soma(int a, int b) {
+        return a + b;
+    }
+}
