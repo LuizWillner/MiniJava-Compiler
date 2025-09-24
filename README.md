@@ -17,7 +17,7 @@ Para o MiniJava:
 ## Testando o scanner
 Compile o arquivo .java com 
 ```shell
-javac -sourcepath src src\main\Main.java
+javac -sourcepath src src/main/Main.java
 ```
 
 E execute-o com
