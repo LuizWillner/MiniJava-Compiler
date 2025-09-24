@@ -24,6 +24,7 @@ LETTER = [a-zA-Z]
 ID = {LETTER}({LETTER}|{DIGIT}|_)*
 INTEGER = {DIGIT}+
 WHITESPACE = [ \t\n\r]+
+STRING = "\""([^\"\\] | \\.)*"\""
 COMMENT = "//".* | "/*"([^])*?"*/"
 
 %%
@@ -33,7 +34,6 @@ COMMENT = "//".* | "/*"([^])*?"*/"
 "static"                 { return new Token("STATIC", yytext()); }
 "void"                   { return new Token("VOID", yytext()); }
 "main"                   { return new Token("MAIN", yytext()); }
-"String"                 { return new Token("STRING", yytext()); }
 "extends"                { return new Token("EXTENDS", yytext()); }
 "return"                 { return new Token("RETURN", yytext()); }
 "int"                    { return new Token("INT", yytext()); }
@@ -66,6 +66,7 @@ COMMENT = "//".* | "/*"([^])*?"*/"
 "}"                      { return new Token("RBRACE", yytext()); }
 
 {ID}                     { return new Token("ID", yytext()); }
+{STRING}                 { return new Token("STRING", yytext()); }
 {INTEGER}                { return new Token("NUMBER", yytext()); }
 {WHITESPACE}             { /* ignora */ }
 {COMMENT}                { /* ignora */ }
