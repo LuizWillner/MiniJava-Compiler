@@ -1,0 +1,12 @@
+
+--- Executando Analisador do Calculator ---
+
+Token - <type: LPAREN, value: (, line: 0, column: 0>
+Token - <type: NUMBER, value: 100.5, line: 0, column: 1>
+Token - <type: PLUS, value: +, line: 0, column: 7>
+Token - <type: NUMBER, value: 20, line: 0, column: 9>
+Token - <type: RPAREN, value: ), line: 0, column: 11>
+Token - <type: MULT, value: *, line: 0, column: 13>
+Token - <type: NUMBER, value: 2, line: 0, column: 15>
+Token - <type: MINUS, value: -, line: 0, column: 17>
+Token - <type: NUMBER, value: 0.2, line: 0, column: 19>

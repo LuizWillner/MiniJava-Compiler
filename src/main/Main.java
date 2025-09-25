@@ -7,6 +7,10 @@ import minijava.MiniJava;   // <-- ADICIONADO
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.Scanner;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 
 public class Main {
     public static void main(String[] args) {
@@ -17,11 +21,14 @@ public class Main {
         System.out.println("2: MiniJava");
         System.out.print("Sua escolha: ");
         String choice = inputScanner.nextLine();
-        String filePath = "";
+
+        String filePath, outputPath;
         if (choice.equals("1")) {
             filePath = "src/calculator/test/";
+            outputPath = "src/calculator/output/";
         } else if (choice.equals("2")) {
             filePath = "src/minijava/test/";
+            outputPath = "src/minijava/output/";
         } else {
             System.out.println("Opção inválida!");
             return;
@@ -32,7 +39,18 @@ public class Main {
         String fullPath = filePath + fileName;
         System.out.println("Caminho completo do arquivo: " + fullPath);
 
-        try (Reader reader = new FileReader(fullPath)) {
+        System.out.print("Digite o nome do arquivo de saída (ex: saida.txt): ");
+        String outputFileName = inputScanner.nextLine();
+        String fullOutputPath = outputPath + outputFileName;
+
+        PrintStream originalOut = System.out; // Salva a saída padrão
+        try (
+                Reader reader = new FileReader(fullPath);
+                FileOutputStream fos = new FileOutputStream(fullOutputPath);
+                TeeOutputStream tos = new TeeOutputStream(originalOut, fos);
+                PrintStream teeOut = new PrintStream(tos)
+        ) {
+            System.setOut(teeOut); // Redireciona a saída para o TeeOutputStream
             switch (choice) {
                 case "1":
                     System.out.println("\n--- Executando Analisador do Calculator ---\n");
@@ -47,7 +65,11 @@ public class Main {
                     break;
             }
         } catch (Exception e) {
-            System.err.println("Erro ao ler o arquivo: " + e.getMessage());
+            System.setOut(originalOut);
+            System.err.println("Erro ao processar: " + e.getMessage());
+        } finally {
+            System.setOut(originalOut);
+            System.out.println("Processamento concluído. Saída salva em: " + fullOutputPath);
         }
     }
 
@@ -66,6 +88,29 @@ public class Main {
         MiniJava.Token token; // <-- CORRIGIDO (era minijava.Calc.Token)
         while ((token = miniJavaScanner.yylex()) != null) {
             System.out.println("Token - <type: " + token.type + ", value: " + token.value + ", line: " + token.line + ", column: " + token.column + ">");
+        }
+    }
+
+    private static class TeeOutputStream extends OutputStream implements AutoCloseable {
+        private final OutputStream out1, out2;
+        public TeeOutputStream(OutputStream out1, OutputStream out2) {
+            this.out1 = out1;
+            this.out2 = out2;
+        }
+        @Override
+        public void write(int b) throws IOException {
+            out1.write(b);
+            out2.write(b);
+        }
+        @Override
+        public void flush() throws IOException {
+            out1.flush();
+            out2.flush();
+        }
+        @Override
+        public void close() throws IOException {
+            out2.close();    // fecha apenas o arquivo
+            out1.flush();    // deixa system.out aberto
         }
     }
 }
