@@ -56,7 +56,7 @@ public class Main {
         // O Token é uma classe interna de Calc, então o tipo completo é Calc.Token
         Calc.Token token;
         while ((token = calcScanner.yylex()) != null) {
-            System.out.println("Token.type: " + token.type + ", Token.value: " + token.value);
+            System.out.println("Token - <type: " + token.type + ", value: " + token.value + ", line: " + token.line + ", column: " + token.column + ">");
         }
     }
 

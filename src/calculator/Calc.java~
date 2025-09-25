@@ -258,9 +258,11 @@ public class Calc {
   private int zzFinalHighSurrogate = 0;
 
   /** Number of newlines encountered up to the start of the matched text. */
+  @SuppressWarnings("unused")
   private int yyline;
 
   /** Number of characters from the last newline up to the start of the matched text. */
+  @SuppressWarnings("unused")
   private int yycolumn;
 
   /** Number of characters up to the start of the matched text. */
@@ -279,14 +281,10 @@ public class Calc {
     public class Token {
       public String type;
       public String value;
-      public int line;
-      public int column;
 
-      public Token(String type, String value, int line, int column) {
+      public Token(String type, String value) {
           this.type = type;
           this.value = value;
-          this.line = line;
-          this.column = column;
       }
     }
 
@@ -578,63 +576,6 @@ public class Calc {
     while (true) {
       zzMarkedPosL = zzMarkedPos;
 
-      boolean zzR = false;
-      int zzCh;
-      int zzCharCount;
-      for (zzCurrentPosL = zzStartRead  ;
-           zzCurrentPosL < zzMarkedPosL ;
-           zzCurrentPosL += zzCharCount ) {
-        zzCh = Character.codePointAt(zzBufferL, zzCurrentPosL, zzMarkedPosL);
-        zzCharCount = Character.charCount(zzCh);
-        switch (zzCh) {
-        case '\u000B':  // fall through
-        case '\u000C':  // fall through
-        case '\u0085':  // fall through
-        case '\u2028':  // fall through
-        case '\u2029':
-          yyline++;
-          yycolumn = 0;
-          zzR = false;
-          break;
-        case '\r':
-          yyline++;
-          yycolumn = 0;
-          zzR = true;
-          break;
-        case '\n':
-          if (zzR)
-            zzR = false;
-          else {
-            yyline++;
-            yycolumn = 0;
-          }
-          break;
-        default:
-          zzR = false;
-          yycolumn += zzCharCount;
-        }
-      }
-
-      if (zzR) {
-        // peek one character ahead if it is
-        // (if we have counted one line too much)
-        boolean zzPeek;
-        if (zzMarkedPosL < zzEndReadL)
-          zzPeek = zzBufferL[zzMarkedPosL] == '\n';
-        else if (zzAtEOF)
-          zzPeek = false;
-        else {
-          boolean eof = zzRefill();
-          zzEndReadL = zzEndRead;
-          zzMarkedPosL = zzMarkedPos;
-          zzBufferL = zzBuffer;
-          if (eof)
-            zzPeek = false;
-          else
-            zzPeek = zzBufferL[zzMarkedPosL] == '\n';
-        }
-        if (zzPeek) yyline--;
-      }
       zzAction = -1;
 
       zzCurrentPosL = zzCurrentPos = zzStartRead = zzMarkedPosL;
@@ -702,7 +643,7 @@ public class Calc {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { return new Token("ERROR-UNKNOWN-TOKEN", yytext(), yyline, yycolumn);
+            { return new Token("UNKNOWN-TOKEN", yytext());
             }
           // fall through
           case 11: break;
@@ -712,42 +653,42 @@ public class Calc {
           // fall through
           case 12: break;
           case 3:
-            { return new Token("LPAREN", yytext(), yyline, yycolumn);
+            { return new Token("LPAREN", yytext());
             }
           // fall through
           case 13: break;
           case 4:
-            { return new Token("RPAREN", yytext(), yyline, yycolumn);
+            { return new Token("RPAREN", yytext());
             }
           // fall through
           case 14: break;
           case 5:
-            { return new Token("MULT", yytext(), yyline, yycolumn);
+            { return new Token("MULT", yytext());
             }
           // fall through
           case 15: break;
           case 6:
-            { return new Token("PLUS", yytext(), yyline, yycolumn);
+            { return new Token("PLUS", yytext());
             }
           // fall through
           case 16: break;
           case 7:
-            { return new Token("MINUS", yytext(), yyline, yycolumn);
+            { return new Token("MINUS", yytext());
             }
           // fall through
           case 17: break;
           case 8:
-            { return new Token("DIV", yytext(), yyline, yycolumn);
+            { return new Token("DIV", yytext());
             }
           // fall through
           case 18: break;
           case 9:
-            { return new Token("NUMBER", yytext(), yyline, yycolumn);
+            { return new Token("NUMBER", yytext());
             }
           // fall through
           case 19: break;
           case 10:
-            { return new Token("POW", yytext(), yyline, yycolumn);
+            { return new Token("POW", yytext());
             }
           // fall through
           case 20: break;
