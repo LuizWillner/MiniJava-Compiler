@@ -12,6 +12,10 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+
 public class Main {
     public static void main(String[] args) {
         Scanner inputScanner = new Scanner(System.in);
@@ -39,8 +43,14 @@ public class Main {
         String fullPath = filePath + fileName;
         System.out.println("Caminho completo do arquivo: " + fullPath);
 
-        System.out.print("Digite o nome do arquivo de saída (ex: saida.txt): ");
+        System.out.print("Digite o nome do arquivo de saída (ex: saida.txt)." +
+                " Deixe em branco caso deseje utilizar a nomenclatura padrão: ");
         String outputFileName = inputScanner.nextLine();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+        if (outputFileName.isEmpty()) {
+            String timestamp = LocalDateTime.now().format(formatter);
+            outputFileName = "output_" + timestamp + "_" + fileName;
+        }
         String fullOutputPath = outputPath + outputFileName;
 
         PrintStream originalOut = System.out; // Salva a saída padrão
