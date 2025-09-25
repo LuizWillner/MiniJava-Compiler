@@ -17,11 +17,22 @@ public class Main {
         System.out.println("2: MiniJava");
         System.out.print("Sua escolha: ");
         String choice = inputScanner.nextLine();
+        String filePath = "";
+        if (choice.equals("1")) {
+            filePath = "src/calculator/test/";
+        } else if (choice.equals("2")) {
+            filePath = "src/minijava/test/";
+        } else {
+            System.out.println("Opção inválida!");
+            return;
+        }
 
         System.out.print("Digite o nome do arquivo de entrada (ex: teste.txt): ");
         String fileName = inputScanner.nextLine();
+        String fullPath = filePath + fileName;
+        System.out.println("Caminho completo do arquivo: " + fullPath);
 
-        try (Reader reader = new FileReader(fileName)) {
+        try (Reader reader = new FileReader(fullPath)) {
             switch (choice) {
                 case "1":
                     System.out.println("\n--- Executando Analisador do Calculator ---\n");
@@ -54,7 +65,7 @@ public class Main {
         // O Token é uma classe interna de MiniJava, então o tipo completo é MiniJava.Token
         MiniJava.Token token; // <-- CORRIGIDO (era minijava.Calc.Token)
         while ((token = miniJavaScanner.yylex()) != null) {
-            System.out.println("Token.type: " + token.type + ", Token.value: " + token.value);
+            System.out.println("Token - <type: " + token.type + ", value: " + token.value + ", line: " + token.line + ", column: " + token.column + ">");
         }
     }
 }

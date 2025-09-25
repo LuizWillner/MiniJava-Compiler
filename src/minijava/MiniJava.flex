@@ -6,15 +6,22 @@ package minijava;
 %public
 %function yylex
 %type Token
+%line
+%column
 
 %{
+
     public class Token {
       public String type;
       public String value;
+      public int line;
+      public int column;
 
-      public Token(String type, String value) {
+      public Token(String type, String value, int line, int column) {
           this.type = type;
           this.value = value;
+          this.line = line;
+          this.column = column;
       }
     }
 %}
@@ -29,45 +36,45 @@ COMMENT = "//".* | "/*"([^])*?"*/"
 
 %%
 
-"class"                  { return new Token("CLASS", yytext()); }
-"public"                 { return new Token("PUBLIC", yytext()); }
-"static"                 { return new Token("STATIC", yytext()); }
-"void"                   { return new Token("VOID", yytext()); }
-"main"                   { return new Token("MAIN", yytext()); }
-"extends"                { return new Token("EXTENDS", yytext()); }
-"return"                 { return new Token("RETURN", yytext()); }
-"int"                    { return new Token("INT", yytext()); }
-"boolean"                { return new Token("BOOLEAN", yytext()); }
-"if"                     { return new Token("IF", yytext()); }
-"else"                   { return new Token("ELSE", yytext()); }
-"while"                  { return new Token("WHILE", yytext()); }
-"true"                   { return new Token("TRUE", yytext()); }
-"false"                  { return new Token("FALSE", yytext()); }
-"this"                   { return new Token("THIS", yytext()); }
-"new"                    { return new Token("NEW", yytext()); }
-"length"                 { return new Token("LENGTH", yytext()); }
-"System\.out\.println"   { return new Token("PRINT", yytext()); }
+"class"                  { return new Token("CLASS", yytext(), yyline, yycolumn); }
+"public"                 { return new Token("PUBLIC", yytext(), yyline, yycolumn); }
+"static"                 { return new Token("STATIC", yytext(), yyline, yycolumn); }
+"void"                   { return new Token("VOID", yytext(), yyline, yycolumn); }
+"main"                   { return new Token("MAIN", yytext(), yyline, yycolumn); }
+"extends"                { return new Token("EXTENDS", yytext(), yyline, yycolumn); }
+"return"                 { return new Token("RETURN", yytext(), yyline, yycolumn); }
+"int"                    { return new Token("INT", yytext(), yyline, yycolumn); }
+"boolean"                { return new Token("BOOLEAN", yytext(), yyline, yycolumn); }
+"if"                     { return new Token("IF", yytext(), yyline, yycolumn); }
+"else"                   { return new Token("ELSE", yytext(), yyline, yycolumn); }
+"while"                  { return new Token("WHILE", yytext(), yyline, yycolumn); }
+"true"                   { return new Token("TRUE", yytext(), yyline, yycolumn); }
+"false"                  { return new Token("FALSE", yytext(), yyline, yycolumn); }
+"this"                   { return new Token("THIS", yytext(), yyline, yycolumn); }
+"new"                    { return new Token("NEW", yytext(), yyline, yycolumn); }
+"length"                 { return new Token("LENGTH", yytext(), yyline, yycolumn); }
+"System\.out\.println"   { return new Token("PRINT", yytext(), yyline, yycolumn); }
 
-"&&"                     { return new Token("AND", yytext()); }
-"<"                      { return new Token("LT", yytext()); }
-"+"                      { return new Token("PLUS", yytext()); }
-"-"                      { return new Token("MINUS", yytext()); }
-"*"                      { return new Token("MULT", yytext()); }
-"!"                      { return new Token("NOT", yytext()); }
-"="                      { return new Token("ASSIGN", yytext()); }
-";"                      { return new Token("SEMI", yytext()); }
-","                      { return new Token("COMMA", yytext()); }
-"."                      { return new Token("DOT", yytext()); }
-"["                      { return new Token("LBRACK", yytext()); }
-"]"                      { return new Token("RBRACK", yytext()); }
-"("                      { return new Token("LPAREN", yytext()); }
-")"                      { return new Token("RPAREN", yytext()); }
-"{"                      { return new Token("LBRACE", yytext()); }
-"}"                      { return new Token("RBRACE", yytext()); }
+"&&"                     { return new Token("AND", yytext(), yyline, yycolumn); }
+"<"                      { return new Token("LT", yytext(), yyline, yycolumn); }
+"+"                      { return new Token("PLUS", yytext(), yyline, yycolumn); }
+"-"                      { return new Token("MINUS", yytext(), yyline, yycolumn); }
+"*"                      { return new Token("MULT", yytext(), yyline, yycolumn); }
+"!"                      { return new Token("NOT", yytext(), yyline, yycolumn); }
+"="                      { return new Token("ASSIGN", yytext(), yyline, yycolumn); }
+";"                      { return new Token("SEMICOL", yytext(), yyline, yycolumn); }
+","                      { return new Token("COMMA", yytext(), yyline, yycolumn); }
+"."                      { return new Token("DOT", yytext(), yyline, yycolumn); }
+"["                      { return new Token("LBRACK", yytext(), yyline, yycolumn); }
+"]"                      { return new Token("RBRACK", yytext(), yyline, yycolumn); }
+"("                      { return new Token("LPAREN", yytext(), yyline, yycolumn); }
+")"                      { return new Token("RPAREN", yytext(), yyline, yycolumn); }
+"{"                      { return new Token("LBRACE", yytext(), yyline, yycolumn); }
+"}"                      { return new Token("RBRACE", yytext(), yyline, yycolumn); }
 
-{ID}                     { return new Token("ID", yytext()); }
-{STRING}                 { return new Token("STRING", yytext()); }
-{INTEGER}                { return new Token("NUMBER", yytext()); }
+{ID}                     { return new Token("ID", yytext(), yyline, yycolumn); }
+{STRING}                 { return new Token("STRING", yytext(), yyline, yycolumn); }
+{INTEGER}                { return new Token("NUMBER", yytext(), yyline, yycolumn); }
 {WHITESPACE}             { /* ignora */ }
 {COMMENT}                { /* ignora */ }
-.                        { return new Token("UNKNOWN-TOKEN", yytext()); }
+.                        { return new Token("ERROR-UNKNOWN-TOKEN", yytext(), yyline, yycolumn); }

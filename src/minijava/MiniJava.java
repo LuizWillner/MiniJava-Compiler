@@ -362,11 +362,9 @@ public class MiniJava {
   private int zzFinalHighSurrogate = 0;
 
   /** Number of newlines encountered up to the start of the matched text. */
-  @SuppressWarnings("unused")
   private int yyline;
 
   /** Number of characters from the last newline up to the start of the matched text. */
-  @SuppressWarnings("unused")
   private int yycolumn;
 
   /** Number of characters up to the start of the matched text. */
@@ -382,13 +380,18 @@ public class MiniJava {
   private boolean zzEOFDone;
 
   /* user code: */
+
     public class Token {
       public String type;
       public String value;
+      public int line;
+      public int column;
 
-      public Token(String type, String value) {
+      public Token(String type, String value, int line, int column) {
           this.type = type;
           this.value = value;
+          this.line = line;
+          this.column = column;
       }
     }
 
@@ -680,6 +683,63 @@ public class MiniJava {
     while (true) {
       zzMarkedPosL = zzMarkedPos;
 
+      boolean zzR = false;
+      int zzCh;
+      int zzCharCount;
+      for (zzCurrentPosL = zzStartRead  ;
+           zzCurrentPosL < zzMarkedPosL ;
+           zzCurrentPosL += zzCharCount ) {
+        zzCh = Character.codePointAt(zzBufferL, zzCurrentPosL, zzMarkedPosL);
+        zzCharCount = Character.charCount(zzCh);
+        switch (zzCh) {
+        case '\u000B':  // fall through
+        case '\u000C':  // fall through
+        case '\u0085':  // fall through
+        case '\u2028':  // fall through
+        case '\u2029':
+          yyline++;
+          yycolumn = 0;
+          zzR = false;
+          break;
+        case '\r':
+          yyline++;
+          yycolumn = 0;
+          zzR = true;
+          break;
+        case '\n':
+          if (zzR)
+            zzR = false;
+          else {
+            yyline++;
+            yycolumn = 0;
+          }
+          break;
+        default:
+          zzR = false;
+          yycolumn += zzCharCount;
+        }
+      }
+
+      if (zzR) {
+        // peek one character ahead if it is
+        // (if we have counted one line too much)
+        boolean zzPeek;
+        if (zzMarkedPosL < zzEndReadL)
+          zzPeek = zzBufferL[zzMarkedPosL] == '\n';
+        else if (zzAtEOF)
+          zzPeek = false;
+        else {
+          boolean eof = zzRefill();
+          zzEndReadL = zzEndRead;
+          zzMarkedPosL = zzMarkedPos;
+          zzBufferL = zzBuffer;
+          if (eof)
+            zzPeek = false;
+          else
+            zzPeek = zzBufferL[zzMarkedPosL] == '\n';
+        }
+        if (zzPeek) yyline--;
+      }
       zzAction = -1;
 
       zzCurrentPosL = zzCurrentPos = zzStartRead = zzMarkedPosL;
@@ -747,7 +807,7 @@ public class MiniJava {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { return new Token("UNKNOWN-TOKEN", yytext());
+            { return new Token("ERROR-UNKNOWN-TOKEN", yytext(), yyline, yycolumn);
             }
           // fall through
           case 40: break;
@@ -757,187 +817,187 @@ public class MiniJava {
           // fall through
           case 41: break;
           case 3:
-            { return new Token("NOT", yytext());
+            { return new Token("NOT", yytext(), yyline, yycolumn);
             }
           // fall through
           case 42: break;
           case 4:
-            { return new Token("LPAREN", yytext());
+            { return new Token("LPAREN", yytext(), yyline, yycolumn);
             }
           // fall through
           case 43: break;
           case 5:
-            { return new Token("RPAREN", yytext());
+            { return new Token("RPAREN", yytext(), yyline, yycolumn);
             }
           // fall through
           case 44: break;
           case 6:
-            { return new Token("MULT", yytext());
+            { return new Token("MULT", yytext(), yyline, yycolumn);
             }
           // fall through
           case 45: break;
           case 7:
-            { return new Token("PLUS", yytext());
+            { return new Token("PLUS", yytext(), yyline, yycolumn);
             }
           // fall through
           case 46: break;
           case 8:
-            { return new Token("COMMA", yytext());
+            { return new Token("COMMA", yytext(), yyline, yycolumn);
             }
           // fall through
           case 47: break;
           case 9:
-            { return new Token("MINUS", yytext());
+            { return new Token("MINUS", yytext(), yyline, yycolumn);
             }
           // fall through
           case 48: break;
           case 10:
-            { return new Token("DOT", yytext());
+            { return new Token("DOT", yytext(), yyline, yycolumn);
             }
           // fall through
           case 49: break;
           case 11:
-            { return new Token("NUMBER", yytext());
+            { return new Token("NUMBER", yytext(), yyline, yycolumn);
             }
           // fall through
           case 50: break;
           case 12:
-            { return new Token("SEMI", yytext());
+            { return new Token("SEMICOL", yytext(), yyline, yycolumn);
             }
           // fall through
           case 51: break;
           case 13:
-            { return new Token("LT", yytext());
+            { return new Token("LT", yytext(), yyline, yycolumn);
             }
           // fall through
           case 52: break;
           case 14:
-            { return new Token("ASSIGN", yytext());
+            { return new Token("ASSIGN", yytext(), yyline, yycolumn);
             }
           // fall through
           case 53: break;
           case 15:
-            { return new Token("ID", yytext());
+            { return new Token("ID", yytext(), yyline, yycolumn);
             }
           // fall through
           case 54: break;
           case 16:
-            { return new Token("LBRACK", yytext());
+            { return new Token("LBRACK", yytext(), yyline, yycolumn);
             }
           // fall through
           case 55: break;
           case 17:
-            { return new Token("RBRACK", yytext());
+            { return new Token("RBRACK", yytext(), yyline, yycolumn);
             }
           // fall through
           case 56: break;
           case 18:
-            { return new Token("LBRACE", yytext());
+            { return new Token("LBRACE", yytext(), yyline, yycolumn);
             }
           // fall through
           case 57: break;
           case 19:
-            { return new Token("RBRACE", yytext());
+            { return new Token("RBRACE", yytext(), yyline, yycolumn);
             }
           // fall through
           case 58: break;
           case 20:
-            { return new Token("STRING", yytext());
+            { return new Token("STRING", yytext(), yyline, yycolumn);
             }
           // fall through
           case 59: break;
           case 21:
-            { return new Token("AND", yytext());
+            { return new Token("AND", yytext(), yyline, yycolumn);
             }
           // fall through
           case 60: break;
           case 22:
-            { return new Token("IF", yytext());
+            { return new Token("IF", yytext(), yyline, yycolumn);
             }
           // fall through
           case 61: break;
           case 23:
-            { return new Token("INT", yytext());
+            { return new Token("INT", yytext(), yyline, yycolumn);
             }
           // fall through
           case 62: break;
           case 24:
-            { return new Token("NEW", yytext());
+            { return new Token("NEW", yytext(), yyline, yycolumn);
             }
           // fall through
           case 63: break;
           case 25:
-            { return new Token("ELSE", yytext());
+            { return new Token("ELSE", yytext(), yyline, yycolumn);
             }
           // fall through
           case 64: break;
           case 26:
-            { return new Token("MAIN", yytext());
+            { return new Token("MAIN", yytext(), yyline, yycolumn);
             }
           // fall through
           case 65: break;
           case 27:
-            { return new Token("THIS", yytext());
+            { return new Token("THIS", yytext(), yyline, yycolumn);
             }
           // fall through
           case 66: break;
           case 28:
-            { return new Token("TRUE", yytext());
+            { return new Token("TRUE", yytext(), yyline, yycolumn);
             }
           // fall through
           case 67: break;
           case 29:
-            { return new Token("VOID", yytext());
+            { return new Token("VOID", yytext(), yyline, yycolumn);
             }
           // fall through
           case 68: break;
           case 30:
-            { return new Token("CLASS", yytext());
+            { return new Token("CLASS", yytext(), yyline, yycolumn);
             }
           // fall through
           case 69: break;
           case 31:
-            { return new Token("FALSE", yytext());
+            { return new Token("FALSE", yytext(), yyline, yycolumn);
             }
           // fall through
           case 70: break;
           case 32:
-            { return new Token("WHILE", yytext());
+            { return new Token("WHILE", yytext(), yyline, yycolumn);
             }
           // fall through
           case 71: break;
           case 33:
-            { return new Token("LENGTH", yytext());
+            { return new Token("LENGTH", yytext(), yyline, yycolumn);
             }
           // fall through
           case 72: break;
           case 34:
-            { return new Token("PUBLIC", yytext());
+            { return new Token("PUBLIC", yytext(), yyline, yycolumn);
             }
           // fall through
           case 73: break;
           case 35:
-            { return new Token("RETURN", yytext());
+            { return new Token("RETURN", yytext(), yyline, yycolumn);
             }
           // fall through
           case 74: break;
           case 36:
-            { return new Token("STATIC", yytext());
+            { return new Token("STATIC", yytext(), yyline, yycolumn);
             }
           // fall through
           case 75: break;
           case 37:
-            { return new Token("BOOLEAN", yytext());
+            { return new Token("BOOLEAN", yytext(), yyline, yycolumn);
             }
           // fall through
           case 76: break;
           case 38:
-            { return new Token("EXTENDS", yytext());
+            { return new Token("EXTENDS", yytext(), yyline, yycolumn);
             }
           // fall through
           case 77: break;
           case 39:
-            { return new Token("PRINT", yytext());
+            { return new Token("PRINT", yytext(), yyline, yycolumn);
             }
           // fall through
           case 78: break;
