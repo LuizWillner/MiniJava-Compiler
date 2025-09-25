@@ -30,6 +30,8 @@ DIGIT = [0-9]
 LETTER = [a-zA-Z]
 ID = {LETTER}({LETTER}|{DIGIT}|_)*
 INTEGER = {DIGIT}+
+FLOAT = {INTEGER}\.{INTEGER}
+NUMBER = {FLOAT} | {INTEGER}
 WHITESPACE = [ \t\n\r]+
 STRING = "\""([^\"\\] | \\.)*"\""
 COMMENT = "//".* | "/*"([^])*?"*/"
@@ -45,6 +47,7 @@ COMMENT = "//".* | "/*"([^])*?"*/"
 "return"                 { return new Token("RETURN", yytext(), yyline, yycolumn); }
 "int"                    { return new Token("INT", yytext(), yyline, yycolumn); }
 "boolean"                { return new Token("BOOLEAN", yytext(), yyline, yycolumn); }
+"String"                 { return new Token("STRING_TYPE", yytext(), yyline, yycolumn); }
 "if"                     { return new Token("IF", yytext(), yyline, yycolumn); }
 "else"                   { return new Token("ELSE", yytext(), yyline, yycolumn); }
 "while"                  { return new Token("WHILE", yytext(), yyline, yycolumn); }
