@@ -90,7 +90,7 @@ public class Main {
 
             // Nova condição de parada: se o token for EOF (ou nulo, por segurança)
             if (token == null || "EOF".equals(token.type)) {
-                System.out.println("--- Fim da Análise Léxica ---");
+                System.out.println("--- Fim da Analise Lexica ---");
                 break; // Sai do loop
             }
             System.out.println("Token - <type: " + token.type + ", value: " + token.value + ", line: " + token.line
