@@ -28,13 +28,11 @@ package minijava;
 
 DIGIT = [0-9]
 LETTER = [a-zA-Z]
-ID = {LETTER}({LETTER}|{DIGIT}|_)*
 INTEGER = {DIGIT}+
-FLOAT = {INTEGER}\.{INTEGER}
-NUMBER = {FLOAT} | {INTEGER}
 WHITESPACE = [ \t\n\r]+
 STRING = "\""([^\"\\] | \\.)*"\""
 COMMENT = "//".* | "/*"([^])*?"*/"
+ID = {LETTER}({LETTER}|{DIGIT}|_)*
 
 %%
 
@@ -80,4 +78,5 @@ COMMENT = "//".* | "/*"([^])*?"*/"
 {INTEGER}                { return new Token("NUMBER", yytext(), yyline, yycolumn); }
 {WHITESPACE}             { /* ignora */ }
 {COMMENT}                { /* ignora */ }
+<<EOF>>                  { return new Token("EOF", "", yyline, yycolumn); }
 .                        { return new Token("ERROR-UNKNOWN-TOKEN", yytext(), yyline, yycolumn); }

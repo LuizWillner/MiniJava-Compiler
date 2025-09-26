@@ -42,5 +42,5 @@ WHITESPACE = [ \t\n\r ]+
 "("                  { return new Token("LPAREN", yytext(), yyline, yycolumn); }
 ")"                  { return new Token("RPAREN", yytext(), yyline, yycolumn); }
 {WHITESPACE}         { /* ignore */ }
-// <<EOF>>              { return new Token("EOF", ""); }
+<<EOF>>              { return new Token("EOF", "", yyline, yycolumn); }
 .                    { return new Token("ERROR-UNKNOWN-TOKEN", yytext(), yyline, yycolumn); }
