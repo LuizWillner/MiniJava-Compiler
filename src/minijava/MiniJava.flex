@@ -29,10 +29,10 @@ package minijava;
 DIGIT = [0-9]
 LETTER = [a-zA-Z]
 INTEGER = {DIGIT}+
-WHITESPACE = [ \t\n\r]+
+WHITESPACE = [ \t\n\r\f]+
 STRING = "\""([^\"\\] | \\.)*"\""
 COMMENT = "//".* | "/*"([^])*?"*/"
-ID = {LETTER}({LETTER}|{DIGIT}|_)*
+ID = {LETTER}|_({LETTER}|{DIGIT}|_)*
 
 %%
 
@@ -57,7 +57,7 @@ ID = {LETTER}({LETTER}|{DIGIT}|_)*
 "System\.out\.println"   { return new Token("PRINT", yytext(), yyline, yycolumn); }
 
 "&&"                     { return new Token("AND", yytext(), yyline, yycolumn); }
-"<"                      { return new Token("LT", yytext(), yyline, yycolumn); }
+"<"                      { return new Token("LESSTHAN", yytext(), yyline, yycolumn); }
 "+"                      { return new Token("PLUS", yytext(), yyline, yycolumn); }
 "-"                      { return new Token("MINUS", yytext(), yyline, yycolumn); }
 "*"                      { return new Token("MULT", yytext(), yyline, yycolumn); }
