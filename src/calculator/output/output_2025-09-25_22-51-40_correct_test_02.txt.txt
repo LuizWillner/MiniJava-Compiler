@@ -1,0 +1,11 @@
+
+--- Executando Analisador do Calculator ---
+
+Token - <type: NUMBER, value: 4, line: 0, column: 0>
+Token - <type: POW, value: **, line: 0, column: 2>
+Token - <type: NUMBER, value: 3, line: 0, column: 5>
+Token - <type: DIV, value: /, line: 0, column: 7>
+Token - <type: NUMBER, value: 2, line: 0, column: 9>
+Token - <type: DIV, value: //, line: 0, column: 11>
+Token - <type: NUMBER, value: 1.567, line: 0, column: 14>
+--- Fim da Análise Léxica ---
