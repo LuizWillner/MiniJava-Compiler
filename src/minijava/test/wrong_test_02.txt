@@ -1,14 +1,12 @@
-// Teste de erro com string mal formada
-
+// Teste de erro com type não existente: ínt
 class TesteString {
     public static void main(String[] args) {
-        System.out.println(new Exemplo().mensagem());
+        System.out.println(new Exemplo().dois());
     }
 }
 
 class Exemplo {
-    public int mensagem() {
-        String texto = "Olá mundo sem fechamento; // Erro
-        return texto;
+    public ínt dois() {
+        return 1+1;
     }
 }

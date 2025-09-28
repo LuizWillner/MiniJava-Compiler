@@ -30,7 +30,6 @@ DIGIT = [0-9]
 LETTER = [a-zA-Z]
 INTEGER = {DIGIT}+
 WHITESPACE = [ \t\n\r\f]+
-STRING = "\""([^\"\\] | \\.)*"\""
 COMMENT = "//".* | "/*"([^])*?"*/"
 ID = {LETTER}|_({LETTER}|{DIGIT}|_)*
 
@@ -74,7 +73,6 @@ ID = {LETTER}|_({LETTER}|{DIGIT}|_)*
 "}"                      { return new Token("RBRACE", yytext(), yyline, yycolumn); }
 
 {ID}                     { return new Token("ID", yytext(), yyline, yycolumn); }
-{STRING}                 { return new Token("STRING", yytext(), yyline, yycolumn); }
 {INTEGER}                { return new Token("NUMBER", yytext(), yyline, yycolumn); }
 {WHITESPACE}             { /* ignora */ }
 {COMMENT}                { /* ignora */ }
