@@ -2,7 +2,7 @@
 Trabalho da disciplina de Compiladores | prof. Flávia Bernardini | 2025.2 | Instituto de Computação | Universidade Federal Fluminense
 
 ## Gerando script do scanner
-Ao fazer alterações em algum arquivo .flex, gere o script do scanner correspondente
+A aplicação foi desenvolvida utilizando o **IntelliJ** como IDE. Ao fazer alterações em algum arquivo .flex, gere o script do scanner correspondente
 
 Para a calculadora:
 ```shell
