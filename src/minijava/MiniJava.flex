@@ -20,8 +20,8 @@ package minijava;
       public Token(String type, String value, int line, int column) {
           this.type = type;
           this.value = value;
-          this.line = line;
-          this.column = column;
+          this.line = line + 1;  // Linhas e colunas começando em 1
+          this.column = column + 1;
       }
     }
 %}
