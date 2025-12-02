@@ -1,0 +1,88 @@
+package minijava;
+
+import java_cup.runtime.*;
+
+/* =================================================
+  Seção de Configurações e Declarações
+================================================= */
+
+parser code {:
+    public void report_error(String message, Object info) {
+        StringBuilder m = new StringBuilder("Erro de Sintaxe");
+        if (info instanceof java_cup.runtime.Symbol) {
+            java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
+            if (s.left >= 0) {
+                m.append(" na linha "+(s.left+1));
+                if (s.right >= 0)
+                    m.append(", coluna "+(s.right+1));
+            }
+        }
+        m.append(" : "+message);
+        System.err.println(m);
+    }
+
+    public void report_fatal_error(String message, Object info) {
+        report_error(message, info);
+    }
+:};
+
+/* =================================================
+  Declaração de Terminais (Tokens do JFlex)
+================================================= */
+
+// Palavras-chave
+terminal CLASS, PUBLIC, STATIC, VOID, MAIN, EXTENDS, RETURN, INT, BOOLEAN, STRING_TYPE;
+terminal IF, ELSE, WHILE, TRUE, FALSE, THIS, NEW, LENGTH, PRINT;
+
+// Tokens com valor
+terminal String ID, NUMBER;
+
+// Operadores e Símbolos
+terminal AND, LESSTHAN, PLUS, MINUS, MULT, NOT, ASSIGN;
+terminal SEMICOL, COMMA, DOT;
+terminal LBRACK, RBRACK, LPAREN, RPAREN, LBRACE, RBRACE;
+terminal EOF; // Token de fim de arquivo
+
+/* =================================================
+  Declaração de Não-Terminais (Símbolos da Gramática)
+================================================= */
+
+non terminal Goal, MainClass, ClassDeclaration, VarDeclaration, MethodDeclaration;
+non terminal Type, Statement, Expression;
+
+/* =================================================
+  Regras da Gramática
+================================================= */
+
+Goal ::= MainClass ClassDeclaration* EOF;
+
+MainClass ::= CLASS ID LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING_TYPE LBRACK RBRACK ID RPAREN LBRACE Statement RBRACE RBRACE;
+
+ClassDeclaration ::= CLASS ID ( EXTENDS ID )? LBRACE VarDeclaration* MethodDeclaration* RBRACE;
+
+VarDeclaration ::= Type ID SEMICOL;
+
+MethodDeclaration ::= PUBLIC Type ID LPAREN ( Type ID ( COMMA Type ID )* )? RPAREN LBRACE VarDeclaration* Statement* RETURN Expression SEMICOL RBRACE;
+
+Type ::= INT LBRACK RBRACK | BOOLEAN | INT | ID;
+
+Statement ::= LBRACE Statement* RBRACE
+            | IF LPAREN Expression RPAREN Statement ELSE Statement
+            | WHILE LPAREN Expression RPAREN Statement
+            | PRINT LPAREN Expression RPAREN SEMICOL
+            | ID ASSIGN Expression SEMICOL
+            | ID LBRACK Expression RBRACK ASSIGN Expression SEMICOL;
+
+Expression ::= Expression AND Expression
+             | Expression LESSTHAN Expression
+             | Expression PLUS Expression
+             | Expression MINUS Expression
+             | Expression MULT Expression
+             | Expression LBRACK Expression RBRACK
+             | Expression DOT LENGTH
+             | Expression DOT ID LPAREN ( Expression ( COMMA Expression )* )? RPAREN
+             | NUMBER | TRUE | FALSE | ID | THIS
+             | NEW INT LBRACK Expression RBRACK
+             | NEW ID LPAREN RPAREN
+             | NOT Expression
+             | LPAREN Expression RPAREN;
