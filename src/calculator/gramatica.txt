@@ -1,0 +1,23 @@
+G1 = {N, T, S, P}
+
+N = {Expr, Term, Factor, Power, Num}
+T = {FLOAT, INTEGER, PLUS, MINUS, MULT, DIV, POW, LPAREN, RPAREN}
+S = Expr
+
+P = {
+  Expr   → Expr PLUS Term
+         | Expr MINUS Term
+         | Term
+
+  Term   → Term MULT Power
+         | Term DIV Power
+         | Power
+
+  Power  → Factor POW Power
+         | Factor
+
+  Factor → LPAREN Expr RPAREN
+         | Num
+
+  Num → FLOAT | INTEGER
+}
