@@ -1,6 +1,8 @@
+# Gramática calculadora (COM recursão à esquerda)
+
 G1 = {N, T, S, P}
 
-N = {Expr, Term, Factor, Power, Num}
+N = {Expr, Term, Power, Factor, Num}
 T = {FLOAT, INTEGER, PLUS, MINUS, MULT, DIV, POW, LPAREN, RPAREN}
 S = Expr
 
@@ -20,4 +22,76 @@ P = {
          | Num
 
   Num → FLOAT | INTEGER
+}
+
+===================================================================
+
+# Gramática calculadora (COM recursão à esquerda, símbolos simplificados)
+
+G1 = {Não-terminais, Terminais, Inicial, Produções}
+
+Não-terminais = {E, T, P, F, N}
+Terminais = {float, int, +, -, x, %, *, (, )}
+Inicial = E
+
+Produções = {
+    E -> E + T | E - T | T
+    T -> T x P | T % P | P
+    P -> F * P | F
+    F -> ( E ) | N
+    N -> float | int
+}
+
+===================================================================
+
+# Gramática calculadora (SEM recursão à esquerda)
+
+G1' = {N, T, S, P}
+
+N = {Expr, Expr' Term, Term', Power, Faactor, Num}
+T = {FLOAT, INTEGER, PLUS, MINUS, MULT, DIV, POW, LPAREN, RPAREN}
+S = Expr
+P = {
+    Expr   -> Term Expr'
+    Expr'  -> + Term Expr'
+            | - Term Expr'
+            | ϵ
+    Term   -> Power Term'
+    Term'  -> MULT Power Term'
+            | DIV Power Term'
+            | ϵ
+    Power  -> Factor MULT Power
+            | Factor
+    Factor -> LPAREN Expr RPAREN
+            | Num
+    Num -> FLOAT | INT
+}
+
+===================================================================
+
+# Gramática calculadora (SEM recursão à esquerda, símbolos simplificados)
+
+Sem rec. à esquerda:
+
+G1' = {Não-terminais, Terminais, Inicial, Produções}
+
+Não-terminais = {E, E', T, T', P, F, N}
+Terminais = {float, int, +, -, x, %, *, (, )}
+Inicial = E
+
+Produções = {
+ E -> T E'
+ T -> P T'
+ P -> F * P
+    | F
+ F -> ( E )
+    | N
+ N -> float
+    | int
+E' -> + T E'
+    | - T E'
+    | ϵ
+T' -> x P T'
+    | % P T'
+    | ϵ
 }
