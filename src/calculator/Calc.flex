@@ -33,7 +33,8 @@ WHITESPACE = [ \t\n\r ]+
 
 %%
 
-{NUMBER}+            { return new Token("NUMBER", yytext(), yyline, yycolumn); }
+{FLOAT}            { return new Token("FLOAT", yytext(), yyline, yycolumn); }
+{INTEGER}            { return new Token("INTEGER", yytext(), yyline, yycolumn); }
 "+"                  { return new Token("PLUS", yytext(), yyline, yycolumn); }
 "-"                  { return new Token("MINUS", yytext(), yyline, yycolumn); }
 "*"                  { return new Token("MULT", yytext(), yyline, yycolumn); }

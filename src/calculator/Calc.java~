@@ -90,7 +90,7 @@ public class Calc {
 
   private static final String ZZ_ACTION_PACKED_0 =
     "\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7"+
-    "\1\10\1\11\1\12\1\10\1\0\1\11";
+    "\1\10\1\11\1\12\1\10\1\0\1\13";
 
   private static int [] zzUnpackAction() {
     int [] result = new int[14];
@@ -119,7 +119,7 @@ public class Calc {
 
   private static final String ZZ_ROWMAP_PACKED_0 =
     "\0\0\0\13\0\26\0\13\0\13\0\41\0\13\0\13"+
-    "\0\54\0\67\0\13\0\13\0\102\0\115";
+    "\0\54\0\67\0\13\0\13\0\102\0\102";
 
   private static int [] zzUnpackRowMap() {
     int [] result = new int[14];
@@ -147,11 +147,10 @@ public class Calc {
   private static final String ZZ_TRANS_PACKED_0 =
     "\1\2\1\3\1\0\1\4\1\5\1\6\1\7\1\10"+
     "\1\2\1\11\1\12\14\0\1\3\16\0\1\13\16\0"+
-    "\1\14\11\0\1\15\1\0\1\12\12\0\1\16\12\0"+
-    "\1\12";
+    "\1\14\11\0\1\15\1\0\1\12\12\0\1\16";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[88];
+    int [] result = new int[77];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -285,8 +284,8 @@ public class Calc {
       public Token(String type, String value, int line, int column) {
           this.type = type;
           this.value = value;
-          this.line = line;
-          this.column = column;
+          this.line = line + 1;  // Linhas e colunas começando em 1
+          this.column = column + 1;
       }
     }
 
@@ -707,52 +706,57 @@ public class Calc {
             { return new Token("ERROR-UNKNOWN-TOKEN", yytext(), yyline, yycolumn);
             }
           // fall through
-          case 11: break;
+          case 12: break;
           case 2:
             { /* ignore */
             }
           // fall through
-          case 12: break;
+          case 13: break;
           case 3:
             { return new Token("LPAREN", yytext(), yyline, yycolumn);
             }
           // fall through
-          case 13: break;
+          case 14: break;
           case 4:
             { return new Token("RPAREN", yytext(), yyline, yycolumn);
             }
           // fall through
-          case 14: break;
+          case 15: break;
           case 5:
             { return new Token("MULT", yytext(), yyline, yycolumn);
             }
           // fall through
-          case 15: break;
+          case 16: break;
           case 6:
             { return new Token("PLUS", yytext(), yyline, yycolumn);
             }
           // fall through
-          case 16: break;
+          case 17: break;
           case 7:
             { return new Token("MINUS", yytext(), yyline, yycolumn);
             }
           // fall through
-          case 17: break;
+          case 18: break;
           case 8:
             { return new Token("DIV", yytext(), yyline, yycolumn);
             }
           // fall through
-          case 18: break;
+          case 19: break;
           case 9:
-            { return new Token("NUMBER", yytext(), yyline, yycolumn);
+            { return new Token("INTEGER", yytext(), yyline, yycolumn);
             }
           // fall through
-          case 19: break;
+          case 20: break;
           case 10:
             { return new Token("POW", yytext(), yyline, yycolumn);
             }
           // fall through
-          case 20: break;
+          case 21: break;
+          case 11:
+            { return new Token("FLOAT", yytext(), yyline, yycolumn);
+            }
+          // fall through
+          case 22: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }
