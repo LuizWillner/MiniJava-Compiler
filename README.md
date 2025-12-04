@@ -4,14 +4,18 @@ Trabalho da disciplina de Compiladores | prof. Flávia Bernardini | 2025.2 | Ins
 ## Gerando script do scanner
 A aplicação foi desenvolvida utilizando o **IntelliJ** como IDE. Ao fazer alterações em algum arquivo .flex, gere o script do scanner correspondente
 
-Para a calculadora:
+Para o flex da calculadora:
 ```shell
  java -jar tools/jflex-full-1.9.1.jar src/calculator/Calc.flex
 ```
 
-Para o MiniJava:
+Para o flex do MiniJava:
 ```shell
  java -jar tools/jflex-full-1.9.1.jar src/minijava/MiniJava.flex
+```
+Para compilar .cup (gramática) do MiniJava:
+```shell
+ java -jar java-cup-11b.jar -parser Parser -symbols sym MiniJava.cup
 ```
 
 ## Testando o scanner

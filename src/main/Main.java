@@ -1,9 +1,9 @@
 package main; // Fica no seu próprio pacote
 
-import calculator.Calc; // <-- ADICIONADO
+import calculator.Calc;
 import java_cup.runtime.Symbol;
-import minijava.Parser; // <-- CORRIGIDO: Nome da classe com 'P' maiúsculo
-import minijava.MiniJava; // <-- ADICIONADO
+import minijava.Parser;
+import minijava.MiniJava;
 
 import java.io.FileReader;
 import java.io.Reader;
