@@ -41,48 +41,75 @@ terminal String ID, NUMBER;
 terminal AND, LESSTHAN, PLUS, MINUS, MULT, NOT, ASSIGN;
 terminal SEMICOL, COMMA, DOT;
 terminal LBRACK, RBRACK, LPAREN, RPAREN, LBRACE, RBRACE;
-terminal EOF; // Token de fim de arquivo
 
 /* =================================================
   Declaração de Não-Terminais (Símbolos da Gramática)
 ================================================= */
 
-non terminal Goal, MainClass, ClassDeclaration, VarDeclaration, MethodDeclaration;
-non terminal Type, Statement, Expression;
+non terminal Goal, MainClass, ClassDeclaration, VarDeclaration, MethodDeclaration, Type, Statement, Expression;
+non terminal ClassDeclarationList, VarDeclarationList, MethodDeclarationList, OptFormalList, FormalList, StatementList, OptExpressionList, ExpressionList;
+
+/* =================================================
+  Declaração de Precedência e Associatividade
+================================================= */
+
+precedence left AND;
+precedence left LESSTHAN;
+precedence left PLUS, MINUS;
+precedence left MULT;
+precedence right NOT;
 
 /* =================================================
   Regras da Gramática
 ================================================= */
 
-Goal ::= MainClass ClassDeclaration* EOF;
+Goal ::= MainClass ClassDeclarationList;
+
+ClassDeclarationList ::= ClassDeclaration ClassDeclarationList
+                      |  /* empty */
+                      ;
 
 MainClass ::= CLASS ID LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING_TYPE LBRACK RBRACK ID RPAREN LBRACE Statement RBRACE RBRACE;
 
-ClassDeclaration ::= CLASS ID ( EXTENDS ID )? LBRACE VarDeclaration* MethodDeclaration* RBRACE;
+ClassDeclaration ::=
+      CLASS ID EXTENDS ID LBRACE VarDeclarationList MethodDeclarationList RBRACE
+    | CLASS ID LBRACE VarDeclarationList MethodDeclarationList RBRACE
+    ;
+
+
+VarDeclarationList ::= VarDeclaration VarDeclarationList | /* empty */;
 
 VarDeclaration ::= Type ID SEMICOL;
 
-MethodDeclaration ::= PUBLIC Type ID LPAREN ( Type ID ( COMMA Type ID )* )? RPAREN LBRACE VarDeclaration* Statement* RETURN Expression SEMICOL RBRACE;
+MethodDeclarationList ::= MethodDeclaration MethodDeclarationList | /* empty */;
+
+MethodDeclaration ::= PUBLIC Type ID LPAREN OptFormalList RPAREN LBRACE VarDeclarationList StatementList RETURN Expression SEMICOL RBRACE;
+
+OptFormalList ::= FormalList | /* empty */;
+FormalList ::= Type ID
+             | FormalList COMMA Type ID;
 
 Type ::= INT LBRACK RBRACK | BOOLEAN | INT | ID;
 
-Statement ::= LBRACE Statement* RBRACE
+StatementList ::= Statement StatementList | /* empty */;
+
+Statement ::= LBRACE StatementList RBRACE
             | IF LPAREN Expression RPAREN Statement ELSE Statement
             | WHILE LPAREN Expression RPAREN Statement
             | PRINT LPAREN Expression RPAREN SEMICOL
             | ID ASSIGN Expression SEMICOL
             | ID LBRACK Expression RBRACK ASSIGN Expression SEMICOL;
 
-Expression ::= Expression AND Expression
-             | Expression LESSTHAN Expression
-             | Expression PLUS Expression
-             | Expression MINUS Expression
-             | Expression MULT Expression
+Expression ::= Expression AND Expression | Expression LESSTHAN Expression | Expression PLUS Expression | Expression MINUS Expression | Expression MULT Expression
              | Expression LBRACK Expression RBRACK
              | Expression DOT LENGTH
-             | Expression DOT ID LPAREN ( Expression ( COMMA Expression )* )? RPAREN
+             | Expression DOT ID LPAREN OptExpressionList RPAREN
              | NUMBER | TRUE | FALSE | ID | THIS
              | NEW INT LBRACK Expression RBRACK
              | NEW ID LPAREN RPAREN
              | NOT Expression
              | LPAREN Expression RPAREN;
+
+OptExpressionList ::= ExpressionList | /* empty */;
+ExpressionList ::= Expression
+                 | ExpressionList COMMA Expression;
