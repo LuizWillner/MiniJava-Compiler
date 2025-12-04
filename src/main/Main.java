@@ -1,7 +1,8 @@
 package main; // Fica no seu próprio pacote
 
-// Importa tudo o que precisamos dos outros pacotes
 import calculator.Calc; // <-- ADICIONADO
+import java_cup.runtime.Symbol;
+import minijava.Parser; // <-- CORRIGIDO: Nome da classe com 'P' maiúsculo
 import minijava.MiniJava; // <-- ADICIONADO
 
 import java.io.FileReader;
@@ -66,7 +67,11 @@ public class Main {
                     break;
                 case "2":
                     System.out.println("\n--- Executando Analisador do MiniJava ---\n");
-                    runMiniJava(reader);
+                    // Modificado para chamar o parser
+                    runMiniJavaParser(reader);
+                    // A chamada antiga pode ser mantida para testes apenas do léxico, se desejado
+                    // System.out.println("\n--- Executando Apenas Analisador Léxico do MiniJava ---\n");
+                    // runMiniJavaLexer(reader);
                     break;
                 default:
                     System.out.println("Opção inválida!");
@@ -81,6 +86,19 @@ public class Main {
         }
     }
 
+    // NOVO MÉTODO: Executa o parser do MiniJava
+    private static void runMiniJavaParser(Reader reader) throws Exception {
+        // Cria o scanner (léxico) que será consumido pelo parser
+        MiniJava miniJavaScanner = new MiniJava(reader);
+        // Cria o parser, passando o scanner para ele
+        Parser miniJavaParser = new Parser(miniJavaScanner);
+        try {
+            miniJavaParser.parse(); // Inicia a análise sintática. Este método pode lançar uma exceção em caso de erro.
+            System.out.println("\nAnálise sintática concluída com sucesso!");
+        } catch (Exception e) {
+            System.err.println("Erro durante a análise sintática: " + e.getMessage());
+        }
+    }
     private static void runCalculator(Reader reader) throws Exception {
         Calc calcScanner = new Calc(reader);
         // O Token é uma classe interna de Calc, então o tipo completo é Calc.Token
@@ -99,7 +117,7 @@ public class Main {
     }
 
     // O método CORRIGIDO
-    private static void runMiniJava(Reader reader) throws Exception {
+    private static void runMiniJavaLexer(Reader reader) throws Exception {
         MiniJava miniJavaScanner = new MiniJava(reader);
         MiniJava.Token token;
 
