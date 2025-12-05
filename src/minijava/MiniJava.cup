@@ -38,6 +38,7 @@ terminal IF, ELSE, WHILE, TRUE, FALSE, THIS, NEW, LENGTH, PRINT;
 terminal String ID, NUMBER;
 
 // Operadores e Símbolos
+terminal ERROR;
 terminal AND, LESSTHAN, PLUS, MINUS, MULT, NOT, ASSIGN;
 terminal SEMICOL, COMMA, DOT;
 terminal LBRACK, RBRACK, LPAREN, RPAREN, LBRACE, RBRACE;

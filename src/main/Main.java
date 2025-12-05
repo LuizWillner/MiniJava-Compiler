@@ -1,8 +1,9 @@
 package main; // Fica no seu próprio pacote
 
 import calculator.Calc;
-import java_cup.runtime.Symbol;
+import java_cup.runtime.*;
 import minijava.Parser;
+import minijava.sym;
 import minijava.MiniJava;
 
 import java.io.FileReader;
@@ -112,20 +113,20 @@ public class Main {
 
     private static void runMiniJavaLexer(Reader reader) throws Exception {
         MiniJava miniJavaScanner = new MiniJava(reader);
-        MiniJava.Token token;
+        Symbol token;
 
         // Inicia um loop infinito que será controlado internamente
         while (true) {
-            token = miniJavaScanner.yylex();
+            token = miniJavaScanner.next_token();
 
             // Nova condição de parada: se o token for EOF (ou nulo, por segurança)
-            if (token == null || "EOF".equals(token.type)) {
+            if (token.sym == sym.EOF) {
                 System.out.println("--- Fim da Analise Lexica ---");
-                break; // Sai do loop
+                break;
             }
 
-            System.out.println("Token - <type: " + token.type + ", value: " + token.value + ", line: " + token.line
-                    + ", column: " + token.column + ">");
+            System.out.println("Token: " + sym.terminalNames[token.sym]
+                    + " Valor: " + token.value);
         }
     }
 

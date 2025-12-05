@@ -39,3 +39,14 @@ E execute-o com
 ```shell
 java -cp src main.Main
 ```
+
+## Testando o parser
+Compile o arquivo .java com
+```shell
+javac -cp ".;src;tools/java-cup-11b-runtime.jar" -d bin src/main/Main.java src/minijava/MiniJava.java src/minijava/Parser.java src/minijava/sym.java
+```
+
+E execute-o com
+```shell
+java -cp src main.Main
+```

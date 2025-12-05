@@ -11,6 +11,9 @@ import java_cup.runtime.Symbol;
 %line
 %column
 
+%function next_token
+%type java_cup.runtime.Symbol
+
 %%
 
 "class"        { return new Symbol(sym.CLASS, yyline, yycolumn); }
