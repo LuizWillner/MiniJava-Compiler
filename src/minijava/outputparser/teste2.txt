@@ -1,0 +1,42 @@
+--- Executando Parser do MiniJava ---
+--- Verificando Scanner (MiniJava) ---
+Scanner OK — nenhum erro léxico encontrado!
+
+Analise sintatica concluida com sucesso!
+
+--- Árvore Sintática (AST) ---
+Goal
+  MainClass
+    ClassName: Calculadora
+    ArgName: args
+    Print
+      MethodCall
+        NewObj
+          Class: Calc
+        MethodName: soma
+        ExprList
+          Number: 5
+          Number: 3
+  ClassDeclList
+    ClassDeclaration
+      ClassName: Calc
+      EmptyVarList
+      MethodDeclList
+        MethodDeclaration
+          Type: int
+          MethodName: soma
+          ParamList
+            Formal
+              Type: int
+              ParamName: a
+            Formal
+              Type: int
+              ParamName: b
+          EmptyVarList
+          EmptyStmtList
+          Return
+            Plus
+              Id: a
+              Id: b
+        EmptyMethodList
+    EmptyClassDeclList

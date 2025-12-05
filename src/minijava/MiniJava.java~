@@ -8,7 +8,7 @@ import java_cup.runtime.Symbol;
 
 
 @SuppressWarnings("fallthrough")
-public class MiniJava implements java_cup.runtime.Scanner, java_cup.runtime.Scanner {
+public class MiniJava implements java_cup.runtime.Scanner {
 
   /** This character denotes the end of file. */
   public static final int YYEOF = -1;
