@@ -35,12 +35,12 @@ public class Main {
                 outputPath = "src/calculator/output/";
                 break;
             case "2":
-                filePath = "src/minijava/outputparser/";
-                outputPath = "src/minijava/output/";
+                filePath = "src/minijava/test/";
+                outputPath = "src/minijava/outputlexer/";
                 break;
             case "3":
-                filePath = "src/minijava/outputlexer/";
-                outputPath = "src/minijava/output/";
+                filePath = "src/minijava/test/";
+                outputPath = "src/minijava/outputparser/";
                 break;
             default:
                 System.out.println("Opção inválida!");
@@ -137,7 +137,7 @@ public class Main {
         Parser miniJavaParser = new Parser(miniJavaScanner);
         try {
             miniJavaParser.parse(); // Inicia a análise sintática. Este método pode lançar uma exceção em caso de erro.
-            System.out.println("\nAnálise sintática concluída com sucesso!");
+            System.out.println("\nAnalise sintatica concluida com sucesso!");
         } catch (Exception e) {
             System.err.println("Erro durante a análise sintática: " + e.getMessage());
         }

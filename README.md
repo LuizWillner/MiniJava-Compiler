@@ -32,12 +32,12 @@ Isto acontece porque, dentro de um método, ao ver ID logo depois de {, o parser
 ## Testando o scanner
 Compile o arquivo .java com 
 ```shell
-javac -sourcepath src src/main/Main.java
+javac -cp ".;src;tools/java-cup-11b-runtime.jar" -d bin src/main/Main.java src/minijava/MiniJava.java src/minijava/Parser.java src/minijava/sym.java
 ```
 
 E execute-o com
 ```shell
-java -cp src main.Main
+java -cp "bin;tools/java-cup-11b-runtime.jar" main.Main
 ```
 
 ## Testando o parser
@@ -48,5 +48,5 @@ javac -cp ".;src;tools/java-cup-11b-runtime.jar" -d bin src/main/Main.java src/m
 
 E execute-o com
 ```shell
-java -cp src main.Main
+java -cp "bin;tools/java-cup-11b-runtime.jar" main.Main
 ```
