@@ -1,6 +1,7 @@
 package minijava;
 
 import java_cup.runtime.*;
+import minijava.ASTNode;
 
 /* =================================================
   Seção de Configurações e Declarações

@@ -5,6 +5,7 @@ import java_cup.runtime.*;
 import minijava.Parser;
 import minijava.sym;
 import minijava.MiniJava;
+import minijava.ASTNode;
 
 import java.io.FileReader;
 import java.io.Reader;
@@ -82,7 +83,7 @@ public class Main {
 
                 case "3":
                     System.out.println("--- Executando Parser do MiniJava ---");
-                    runMiniJavaParser(reader);
+                    runMiniJavaParser(reader,fullPath);
                     break;
             }
         } catch (Exception e) {
@@ -130,14 +131,51 @@ public class Main {
         }
     }
 
-    private static void runMiniJavaParser(Reader reader) throws Exception {
-        // Cria o scanner (léxico) que será consumido pelo parser
+    private static void runMiniJavaParser(Reader reader,String fullPath) throws Exception {
+
+        System.out.println("--- Verificando Scanner (MiniJava) ---");
+
+        // Primeira passada: validar scanner
+        MiniJava scanCheck = new MiniJava(reader);
+        Symbol tok;
+        boolean scannerOK = true;
+
+        while (true) {
+            tok = scanCheck.next_token();
+            if (tok.sym == sym.EOF) break;
+
+            if (tok.sym == sym.ERROR) {
+                scannerOK = false;
+                System.out.println("Erro léxico: símbolo inválido '" + tok.value +
+                        "' na linha " + tok.left + ", coluna " + tok.right);
+            }
+        }
+
+        if (scannerOK)
+            System.out.println("Scanner OK — nenhum erro léxico encontrado!");
+        else
+            System.out.println("Scanner apresentou erros! O Parser ainda tentará continuar...");
+
+        // Segunda passada: reinicia o reader para o Parser
+        reader = new FileReader(fullPath);
+
         MiniJava miniJavaScanner = new MiniJava(reader);
-        // Cria o parser, passando o scanner para ele
         Parser miniJavaParser = new Parser(miniJavaScanner);
+
         try {
-            miniJavaParser.parse(); // Inicia a análise sintática. Este método pode lançar uma exceção em caso de erro.
+            Symbol result = miniJavaParser.parse();
             System.out.println("\nAnalise sintatica concluida com sucesso!");
+
+            // O Parser deve retornar um ASTNode
+            ASTNode ast = (ASTNode) result.value;
+
+            if (ast != null) {
+                System.out.println("\n--- Árvore Sintática (AST) ---");
+                ast.print("");
+            } else {
+                System.out.println("Parser não retornou AST.");
+            }
+
         } catch (Exception e) {
             System.err.println("Erro durante a análise sintática: " + e.getMessage());
         }
