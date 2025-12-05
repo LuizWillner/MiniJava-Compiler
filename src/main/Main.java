@@ -20,22 +20,30 @@ public class Main {
     public static void main(String[] args) {
         Scanner inputScanner = new Scanner(System.in);
 
-        System.out.println("Escolha qual analisador léxico executar:");
-        System.out.println("1: Calculadora"); // Mudado para "Calculator"
-        System.out.println("2: MiniJava");
+        System.out.println("Escolha o módulo:");
+        System.out.println("1: Lexer da Calculadora");
+        System.out.println("2: Lexer do MiniJava");
+        System.out.println("3: Parser do MiniJava (léxico + sintático)");
         System.out.print("Sua escolha: ");
         String choice = inputScanner.nextLine();
 
         String filePath, outputPath;
-        if (choice.equals("1")) {
-            filePath = "src/calculator/test/";
-            outputPath = "src/calculator/output/";
-        } else if (choice.equals("2")) {
-            filePath = "src/minijava/test/";
-            outputPath = "src/minijava/output/";
-        } else {
-            System.out.println("Opção inválida!");
-            return;
+        switch (choice) {
+            case "1":
+                filePath = "src/calculator/test/";
+                outputPath = "src/calculator/output/";
+                break;
+            case "2":
+                filePath = "src/minijava/outputparser/";
+                outputPath = "src/minijava/output/";
+                break;
+            case "3":
+                filePath = "src/minijava/outputlexer/";
+                outputPath = "src/minijava/output/";
+                break;
+            default:
+                System.out.println("Opção inválida!");
+                return;
         }
 
         System.out.print("Digite o nome do arquivo de entrada (ex: teste.txt): ");
@@ -62,19 +70,18 @@ public class Main {
             System.setOut(teeOut); // Redireciona a saída para o TeeOutputStream
             switch (choice) {
                 case "1":
-                    System.out.println("\n--- Executando Analisador do Calculator ---\n");
-                    runCalculator(reader);
+                    System.out.println("--- Executando Lexer da Calculadora ---");
+                    runCalculatorLexer(reader);
                     break;
+
                 case "2":
-                    System.out.println("\n--- Executando Analisador do MiniJava ---\n");
-                    // Modificado para chamar o parser
-                    runMiniJavaParser(reader);
-                    // A chamada antiga pode ser mantida para testes apenas do léxico, se desejado
-                    // System.out.println("\n--- Executando Apenas Analisador Léxico do MiniJava ---\n");
-                    // runMiniJavaLexer(reader);
+                    System.out.println("--- Executando Lexer do MiniJava ---");
+                    runMiniJavaLexer(reader);
                     break;
-                default:
-                    System.out.println("Opção inválida!");
+
+                case "3":
+                    System.out.println("--- Executando Parser do MiniJava ---");
+                    runMiniJavaParser(reader);
                     break;
             }
         } catch (Exception e) {
@@ -86,20 +93,7 @@ public class Main {
         }
     }
 
-    // NOVO MÉTODO: Executa o parser do MiniJava
-    private static void runMiniJavaParser(Reader reader) throws Exception {
-        // Cria o scanner (léxico) que será consumido pelo parser
-        MiniJava miniJavaScanner = new MiniJava(reader);
-        // Cria o parser, passando o scanner para ele
-        Parser miniJavaParser = new Parser(miniJavaScanner);
-        try {
-            miniJavaParser.parse(); // Inicia a análise sintática. Este método pode lançar uma exceção em caso de erro.
-            System.out.println("\nAnálise sintática concluída com sucesso!");
-        } catch (Exception e) {
-            System.err.println("Erro durante a análise sintática: " + e.getMessage());
-        }
-    }
-    private static void runCalculator(Reader reader) throws Exception {
+    private static void runCalculatorLexer(Reader reader) throws Exception {
         Calc calcScanner = new Calc(reader);
         // O Token é uma classe interna de Calc, então o tipo completo é Calc.Token
         Calc.Token token;
@@ -116,7 +110,6 @@ public class Main {
         }
     }
 
-    // O método CORRIGIDO
     private static void runMiniJavaLexer(Reader reader) throws Exception {
         MiniJava miniJavaScanner = new MiniJava(reader);
         MiniJava.Token token;
@@ -133,6 +126,19 @@ public class Main {
 
             System.out.println("Token - <type: " + token.type + ", value: " + token.value + ", line: " + token.line
                     + ", column: " + token.column + ">");
+        }
+    }
+
+    private static void runMiniJavaParser(Reader reader) throws Exception {
+        // Cria o scanner (léxico) que será consumido pelo parser
+        MiniJava miniJavaScanner = new MiniJava(reader);
+        // Cria o parser, passando o scanner para ele
+        Parser miniJavaParser = new Parser(miniJavaScanner);
+        try {
+            miniJavaParser.parse(); // Inicia a análise sintática. Este método pode lançar uma exceção em caso de erro.
+            System.out.println("\nAnálise sintática concluída com sucesso!");
+        } catch (Exception e) {
+            System.err.println("Erro durante a análise sintática: " + e.getMessage());
         }
     }
 
