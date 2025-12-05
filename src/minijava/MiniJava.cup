@@ -71,10 +71,9 @@ ClassDeclarationList ::= ClassDeclaration ClassDeclarationList
 
 MainClass ::= CLASS ID LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING_TYPE LBRACK RBRACK ID RPAREN LBRACE Statement RBRACE RBRACE;
 
-ClassDeclaration ::=
-      CLASS ID EXTENDS ID LBRACE VarDeclarationList MethodDeclarationList RBRACE
-    | CLASS ID LBRACE VarDeclarationList MethodDeclarationList RBRACE
-    ;
+ClassDeclaration ::= CLASS ID LBRACE VarDeclarationList MethodDeclarationList RBRACE
+                   | CLASS ID EXTENDS ID LBRACE VarDeclarationList MethodDeclarationList RBRACE
+                   ;
 
 
 VarDeclarationList ::= VarDeclaration VarDeclarationList | /* empty */;

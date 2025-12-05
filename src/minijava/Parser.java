@@ -32,8 +32,8 @@ public class Parser extends java_cup.runtime.lr_parser {
   protected static final short _production_table[][] = 
     unpackFromStrings(new String[] {
     "\000\062\000\002\002\004\000\002\002\004\000\002\012" +
-    "\004\000\002\012\002\000\002\003\023\000\002\004\012" +
-    "\000\002\004\010\000\002\013\004\000\002\013\002\000" +
+    "\004\000\002\012\002\000\002\003\023\000\002\004\010" +
+    "\000\002\004\012\000\002\013\004\000\002\013\002\000" +
     "\002\005\005\000\002\014\004\000\002\014\002\000\002" +
     "\006\017\000\002\015\003\000\002\015\002\000\002\016" +
     "\004\000\002\016\006\000\002\007\005\000\002\007\003" +
@@ -193,12 +193,12 @@ public class Parser extends java_cup.runtime.lr_parser {
     "\001\002\000\006\005\ufff5\050\ufff5\001\002\000\006\041" +
     "\ufff2\046\ufff2\001\002\000\010\013\155\014\154\027\150" +
     "\001\002\000\004\027\205\001\002\000\006\041\ufff1\046" +
-    "\ufff1\001\002\000\004\050\ufff7\001\002\000\006\002\ufffc" +
-    "\004\ufffc\001\002\000\004\040\211\001\002\000\026\005" +
+    "\ufff1\001\002\000\004\050\ufff7\001\002\000\006\002\ufffb" +
+    "\004\ufffb\001\002\000\004\040\211\001\002\000\026\005" +
     "\ufff8\012\ufff8\013\ufff8\014\ufff8\016\ufff8\020\ufff8\026\ufff8" +
     "\027\ufff8\047\ufff8\050\ufff8\001\002\000\006\005\163\050" +
-    "\ufff6\001\002\000\004\050\214\001\002\000\006\002\ufffb" +
-    "\004\ufffb\001\002\000\004\002\uffff\001\002\000\004\002" +
+    "\ufff6\001\002\000\004\050\214\001\002\000\006\002\ufffc" +
+    "\004\ufffc\001\002\000\004\002\uffff\001\002\000\004\002" +
     "\000\001\002" });
 
   /** Access to parse-action table. */
@@ -392,20 +392,20 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 5: // ClassDeclaration ::= CLASS ID EXTENDS ID LBRACE VarDeclarationList MethodDeclarationList RBRACE 
-            {
-              Object RESULT =null;
-
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("ClassDeclaration",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
-            }
-          return CUP$Parser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 6: // ClassDeclaration ::= CLASS ID LBRACE VarDeclarationList MethodDeclarationList RBRACE 
+          case 5: // ClassDeclaration ::= CLASS ID LBRACE VarDeclarationList MethodDeclarationList RBRACE 
             {
               Object RESULT =null;
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("ClassDeclaration",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 6: // ClassDeclaration ::= CLASS ID EXTENDS ID LBRACE VarDeclarationList MethodDeclarationList RBRACE 
+            {
+              Object RESULT =null;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("ClassDeclaration",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 

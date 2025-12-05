@@ -16,7 +16,8 @@ Para o flex do MiniJava:
 ## Gerando script do parser
 Para compilar .cup (gramática) do MiniJava (Esperando 2 conflitos de ambiguidade ):
 ```shell
- java -jar tools/java-cup-11b.jar -parser Parser -symbols sym -expect 2 src/minijava/MiniJava.cup
+ java -jar tools/java-cup-11b.jar -parser Parser -symbols sym -destdir src/minijava -expect 2 src/minijava/MiniJava.cup
+
 
 ```
 Os conflitos esperados são entre:
