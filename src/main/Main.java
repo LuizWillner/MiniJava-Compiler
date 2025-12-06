@@ -164,6 +164,8 @@ public class Main {
         else
             System.out.println("\nScanner apresentou erros! O Parser ainda tentará continuar...");
 
+        System.out.println("\n--- Iniciando Análise Sintática ---");
+
         // Segunda passada: reinicia o reader para o Parser
         reader = new FileReader(fullPath);
 
@@ -176,7 +178,7 @@ public class Main {
             // A análise sintática só é bem-sucedida se o parser retornar um Symbol
             // e o valor dentro dele for uma instância de ASTNode.
             if (!miniJavaParser.hasErrors() && result != null && result.value instanceof ASTNode) {
-                System.out.println("\nAnalise sintatica concluada com sucesso!");
+                System.out.println("\nAnalise sintatica concluida com sucesso!");
                 ASTNode ast = (ASTNode) result.value;
                 System.out.println("\n--- Árvore Sintática (AST) ---");
                 ast.print("");
