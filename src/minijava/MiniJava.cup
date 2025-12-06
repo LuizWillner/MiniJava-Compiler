@@ -3,6 +3,7 @@ import java_cup.runtime.*;
 import minijava.ASTNode;
 
 parser code {:
+    private boolean syntaxErrors = false;
     public void report_error(String message, Object info) {
         StringBuilder m = new StringBuilder("Erro de Sintaxe");
         if (info instanceof java_cup.runtime.Symbol) {
@@ -15,10 +16,15 @@ parser code {:
         }
         m.append(" : "+message);
         System.err.println(m);
+        this.syntaxErrors = true;
     }
 
     public void report_fatal_error(String message, Object info) {
         report_error(message, info);
+    }
+
+    public boolean hasErrors() {
+        return this.syntaxErrors;
     }
 :};
 

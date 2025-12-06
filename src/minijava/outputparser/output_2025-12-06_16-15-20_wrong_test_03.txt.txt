@@ -1,0 +1,92 @@
+--- Executando Parser do MiniJava ---
+--- Verificando Scanner (MiniJava) ---
+Token: CLASS Valor: null
+Token: ID Valor: TesteComentario
+Token: LBRACE Valor: null
+Token: PUBLIC Valor: null
+Token: STATIC Valor: null
+Token: VOID Valor: null
+Token: MAIN Valor: null
+Token: LPAREN Valor: null
+Token: STRING_TYPE Valor: null
+Token: LBRACK Valor: null
+Token: RBRACK Valor: null
+Token: ID Valor: args
+Token: RPAREN Valor: null
+Token: LBRACE Valor: null
+Token: PRINT Valor: null
+Token: LPAREN Valor: null
+Token: NEW Valor: null
+Token: ID Valor: Calc
+Token: LPAREN Valor: null
+Token: RPAREN Valor: null
+Token: DOT Valor: null
+Token: ID Valor: calcula
+Token: LPAREN Valor: null
+Token: NUMBER Valor: 15
+Token: RPAREN Valor: null
+Token: RPAREN Valor: null
+Token: SEMICOL Valor: null
+Token: RBRACE Valor: null
+Token: RBRACE Valor: null
+Token: CLASS Valor: null
+Token: ID Valor: Calc
+Token: LBRACE Valor: null
+Token: PUBLIC Valor: null
+Token: INT Valor: null
+Token: ID Valor: calcula
+Token: LPAREN Valor: null
+Token: INT Valor: null
+Token: ID Valor: numero
+Token: RPAREN Valor: null
+Token: LBRACE Valor: null
+Token: ERROR Valor: /
+Erro léxico: símbolo inválido '/' na linha 11, coluna 9
+Token: MULT Valor: null
+Token: ID Valor: Este
+Token: ERROR Valor: é
+Erro léxico: símbolo inválido 'é' na linha 11, coluna 17
+Token: ID Valor: um
+Token: ID Valor: coment
+Token: ERROR Valor: á
+Erro léxico: símbolo inválido 'á' na linha 11, coluna 28
+Token: ID Valor: rio
+Token: ID Valor: de
+Token: ID Valor: bloco
+Token: ID Valor: que
+Token: ID Valor: n
+Token: ERROR Valor: ã
+Erro léxico: símbolo inválido 'ã' na linha 11, coluna 47
+Token: ID Valor: o
+Token: ID Valor: foi
+Token: ID Valor: fechado
+Token: ID Valor: e
+Token: ID Valor: deve
+Token: ID Valor: causar
+Token: ID Valor: um
+Token: ID Valor: erro
+Token: ID Valor: no
+Token: ID Valor: scanner
+Token: INT Valor: null
+Token: ID Valor: resultado
+Token: ASSIGN Valor: null
+Token: ID Valor: numero
+Token: MULT Valor: null
+Token: NUMBER Valor: 2
+Token: SEMICOL Valor: null
+Token: RETURN Valor: null
+Token: ID Valor: resultado
+Token: SEMICOL Valor: null
+Token: RBRACE Valor: null
+Token: RBRACE Valor: null
+--- Fim da verificação léxica ---
+
+Scanner apresentou erros! O Parser ainda tentará continuar...
+instead expected token classes are [BOOLEAN, IF, WHILE, PRINT, ID, LBRACE]
+
+Analise sintatica concluada com sucesso!
+
+--- Árvore Sintática (AST) ---
+Formal
+  Type: int
+  ParamName: numero

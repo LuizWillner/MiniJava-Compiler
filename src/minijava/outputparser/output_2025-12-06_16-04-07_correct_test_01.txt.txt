@@ -1,0 +1,95 @@
+--- Executando Parser do MiniJava ---
+--- Verificando Scanner (MiniJava) ---
+Token: CLASS Valor: null
+Token: ID Valor: Calculadora
+Token: LBRACE Valor: null
+Token: PUBLIC Valor: null
+Token: STATIC Valor: null
+Token: VOID Valor: null
+Token: MAIN Valor: null
+Token: LPAREN Valor: null
+Token: STRING_TYPE Valor: null
+Token: LBRACK Valor: null
+Token: RBRACK Valor: null
+Token: ID Valor: args
+Token: RPAREN Valor: null
+Token: LBRACE Valor: null
+Token: PRINT Valor: null
+Token: LPAREN Valor: null
+Token: NEW Valor: null
+Token: ID Valor: Calc
+Token: LPAREN Valor: null
+Token: RPAREN Valor: null
+Token: DOT Valor: null
+Token: ID Valor: soma
+Token: LPAREN Valor: null
+Token: NUMBER Valor: 5
+Token: COMMA Valor: null
+Token: NUMBER Valor: 3
+Token: RPAREN Valor: null
+Token: RPAREN Valor: null
+Token: SEMICOL Valor: null
+Token: RBRACE Valor: null
+Token: RBRACE Valor: null
+Token: CLASS Valor: null
+Token: ID Valor: Calc
+Token: LBRACE Valor: null
+Token: PUBLIC Valor: null
+Token: INT Valor: null
+Token: ID Valor: soma
+Token: LPAREN Valor: null
+Token: INT Valor: null
+Token: ID Valor: a
+Token: COMMA Valor: null
+Token: INT Valor: null
+Token: ID Valor: b
+Token: RPAREN Valor: null
+Token: LBRACE Valor: null
+Token: RETURN Valor: null
+Token: ID Valor: a
+Token: PLUS Valor: null
+Token: ID Valor: b
+Token: SEMICOL Valor: null
+Token: RBRACE Valor: null
+Token: RBRACE Valor: null
+--- Fim da verificação léxica ---
+
+Scanner OK — nenhum erro léxico encontrado!
+
+Analise sintatica concluada com sucesso!
+
+--- Árvore Sintática (AST) ---
+Goal
+  MainClass
+    ClassName: Calculadora
+    ArgName: args
+    Print
+      MethodCall
+        NewObj
+          Class: Calc
+        MethodName: soma
+        ExprList
+          Number: 5
+          Number: 3
+  ClassDeclList
+    ClassDeclaration
+      ClassName: Calc
+      EmptyVarList
+      MethodDeclList
+        MethodDeclaration
+          Type: int
+          MethodName: soma
+          ParamList
+            Formal
+              Type: int
+              ParamName: a
+            Formal
+              Type: int
+              ParamName: b
+          EmptyStmtList
+          Return
+            Plus
+              Id: a
+              Id: b
+        EmptyMethodList
+    EmptyClassDeclList

@@ -1,0 +1,61 @@
+--- Executando Parser do MiniJava ---
+--- Verificando Scanner (MiniJava) ---
+Token: CLASS Valor: null
+Token: ID Valor: TesteErro
+Token: LBRACE Valor: null
+Token: PUBLIC Valor: null
+Token: STATIC Valor: null
+Token: VOID Valor: null
+Token: MAIN Valor: null
+Token: LPAREN Valor: null
+Token: STRING_TYPE Valor: null
+Token: LBRACK Valor: null
+Token: RBRACK Valor: null
+Token: ID Valor: args
+Token: RPAREN Valor: null
+Token: LBRACE Valor: null
+Token: PRINT Valor: null
+Token: LPAREN Valor: null
+Token: NEW Valor: null
+Token: ID Valor: MultiploDeDez
+Token: LPAREN Valor: null
+Token: RPAREN Valor: null
+Token: DOT Valor: null
+Token: ID Valor: teste
+Token: LPAREN Valor: null
+Token: RPAREN Valor: null
+Token: RPAREN Valor: null
+Token: SEMICOL Valor: null
+Token: RBRACE Valor: null
+Token: RBRACE Valor: null
+Token: CLASS Valor: null
+Token: ID Valor: MultiploDeDez
+Token: LBRACE Valor: null
+Token: PUBLIC Valor: null
+Token: INT Valor: null
+Token: ID Valor: teste
+Token: LPAREN Valor: null
+Token: RPAREN Valor: null
+Token: LBRACE Valor: null
+Token: INT Valor: null
+Token: ID Valor: numero
+Token: ASSIGN Valor: null
+Token: NUMBER Valor: 42
+Token: SEMICOL Valor: null
+Token: RETURN Valor: null
+Token: ID Valor: numero
+Token: ERROR Valor: @
+Erro léxico: símbolo inválido '@' na linha 12, coluna 23
+Token: NUMBER Valor: 10
+Token: SEMICOL Valor: null
+Token: RBRACE Valor: null
+Token: RBRACE Valor: null
+--- Fim da verificação léxica ---
+
+Scanner apresentou erros! O Parser ainda tentará continuar...
+instead expected token classes are []
+
+Analise sintatica concluada com sucesso!
+
+--- Árvore Sintática (AST) ---
+Type: int
