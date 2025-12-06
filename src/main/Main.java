@@ -142,19 +142,26 @@ public class Main {
 
         while (true) {
             tok = scanCheck.next_token();
-            if (tok.sym == sym.EOF) break;
+            if (tok.sym == sym.EOF) {
+                break;
+            }
+
+            // Imprime o token encontrado, assim como no modo Lexer
+            System.out.println("Token: " + sym.terminalNames[tok.sym]
+                    + " Valor: " + (tok.value != null ? tok.value : "null"));
 
             if (tok.sym == sym.ERROR) {
                 scannerOK = false;
                 System.out.println("Erro léxico: símbolo inválido '" + tok.value +
-                        "' na linha " + tok.left + ", coluna " + tok.right);
+                        "' na linha " + (tok.left + 1) + ", coluna " + (tok.right + 1));
             }
         }
 
+        System.out.println("--- Fim da verificação léxica ---");
         if (scannerOK)
-            System.out.println("Scanner OK — nenhum erro léxico encontrado!");
+            System.out.println("\nScanner OK — nenhum erro léxico encontrado!");
         else
-            System.out.println("Scanner apresentou erros! O Parser ainda tentará continuar...");
+            System.out.println("\nScanner apresentou erros! O Parser ainda tentará continuar...");
 
         // Segunda passada: reinicia o reader para o Parser
         reader = new FileReader(fullPath);
@@ -164,20 +171,22 @@ public class Main {
 
         try {
             Symbol result = miniJavaParser.parse();
-            System.out.println("\nAnalise sintatica concluida com sucesso!");
 
-            // O Parser deve retornar um ASTNode
-            ASTNode ast = (ASTNode) result.value;
-
-            if (ast != null) {
+            // A análise sintática só é bem-sucedida se o parser retornar um Symbol
+            // e o valor dentro dele for uma instância de ASTNode.
+            if (result != null && result.value instanceof ASTNode) {
+                System.out.println("\nAnalise sintatica concluada com sucesso!");
+                ASTNode ast = (ASTNode) result.value;
                 System.out.println("\n--- Árvore Sintática (AST) ---");
                 ast.print("");
             } else {
-                System.out.println("Parser não retornou AST.");
+                // Se result for nulo, significa que um erro sintático irrecuperável ocorreu.
+                // A mensagem de erro já foi impressa pelo método report_error do parser.
+                System.err.println("\nFalha na analise sintatica. A AST nao pode ser gerada.");
             }
 
         } catch (Exception e) {
-            System.err.println("Erro durante a análise sintática: " + e.getMessage());
+            System.err.println("\nErro irrecuperável durante a análise sintática: " + e.getMessage());
         }
     }
 

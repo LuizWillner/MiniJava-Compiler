@@ -1,3 +1,0 @@
---- Executando Parser do MiniJava ---
-
-Análise sintática concluída com sucesso!
