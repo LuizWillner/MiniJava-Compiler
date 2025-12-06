@@ -370,6 +370,7 @@ public class Parser extends java_cup.runtime.lr_parser {
 
 
 
+    private boolean syntaxErrors = false;
     public void report_error(String message, Object info) {
         StringBuilder m = new StringBuilder("Erro de Sintaxe");
         if (info instanceof java_cup.runtime.Symbol) {
@@ -382,10 +383,15 @@ public class Parser extends java_cup.runtime.lr_parser {
         }
         m.append(" : "+message);
         System.err.println(m);
+        this.syntaxErrors = true;
     }
 
     public void report_fatal_error(String message, Object info) {
         report_error(message, info);
+    }
+
+    public boolean hasErrors() {
+        return this.syntaxErrors;
     }
 
 

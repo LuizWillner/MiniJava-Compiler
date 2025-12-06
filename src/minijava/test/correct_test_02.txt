@@ -11,7 +11,8 @@ class Exemplo {
     public int teste(int valor) {
         int resultado;
         boolean condicao;
-        
+        int[] array;
+
         if (valor < 10) {
             resultado = valor + 5;
             condicao = true;
@@ -19,18 +20,19 @@ class Exemplo {
             resultado = valor - 3;
             condicao = false;
         }
-        
+
         while (resultado < 100 && condicao) {
             resultado = resultado * 2;
             if (!condicao) {
                 resultado = numero + valor;
+            } else {
+                resultado = resultado + 1;
             }
         }
-        
-        int[] array;
+
         array = new int[10];
         array[0] = resultado;
-        
+
         return array.length + array[0];
     }
 }

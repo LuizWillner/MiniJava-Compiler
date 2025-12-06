@@ -22,6 +22,8 @@ class ArrayOps {
         
         if (numeros[0] < numeros[1] && !encontrou) {
             encontrou = true;
+        } else {
+            encontrou = false;
         }
         
         return tamanho;
