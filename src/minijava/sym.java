@@ -8,25 +8,25 @@ package minijava;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int MULT = 28;
-  public static final int LPAREN = 36;
+  public static final int MULT = 25;
+  public static final int LPAREN = 33;
   public static final int INT = 9;
-  public static final int MINUS = 27;
-  public static final int RPAREN = 37;
+  public static final int MINUS = 24;
   public static final int STATIC = 4;
-  public static final int NOT = 29;
-  public static final int AND = 24;
-  public static final int LESSTHAN = 25;
-  public static final int COMMA = 32;
-  public static final int SEMICOL = 31;
+  public static final int RPAREN = 34;
+  public static final int NOT = 26;
+  public static final int AND = 21;
+  public static final int LESSTHAN = 22;
+  public static final int COMMA = 29;
+  public static final int SEMICOL = 28;
   public static final int CLASS = 2;
-  public static final int PLUS = 26;
-  public static final int ASSIGN = 30;
+  public static final int PLUS = 23;
+  public static final int ASSIGN = 27;
   public static final int MAIN = 6;
   public static final int IF = 12;
   public static final int THIS = 17;
-  public static final int DOT = 33;
-  public static final int ID = 21;
+  public static final int ID = 37;
+  public static final int DOT = 30;
   public static final int EOF = 0;
   public static final int BOOLEAN = 10;
   public static final int RETURN = 8;
@@ -34,16 +34,16 @@ public class sym {
   public static final int TRUE = 15;
   public static final int NEW = 18;
   public static final int error = 1;
-  public static final int NUMBER = 22;
+  public static final int NUMBER = 38;
   public static final int VOID = 5;
-  public static final int ERROR = 23;
-  public static final int LBRACK = 34;
-  public static final int LBRACE = 38;
+  public static final int ERROR = 39;
+  public static final int LBRACK = 31;
+  public static final int LBRACE = 35;
   public static final int ELSE = 13;
-  public static final int RBRACK = 35;
+  public static final int RBRACK = 32;
   public static final int WHILE = 14;
   public static final int PUBLIC = 3;
-  public static final int RBRACE = 39;
+  public static final int RBRACE = 36;
   public static final int EXTENDS = 7;
   public static final int FALSE = 16;
   public static final int PRINT = 20;
@@ -70,9 +70,6 @@ public class sym {
   "NEW",
   "LENGTH",
   "PRINT",
-  "ID",
-  "NUMBER",
-  "ERROR",
   "AND",
   "LESSTHAN",
   "PLUS",
@@ -88,7 +85,10 @@ public class sym {
   "LPAREN",
   "RPAREN",
   "LBRACE",
-  "RBRACE"
+  "RBRACE",
+  "ID",
+  "NUMBER",
+  "ERROR"
   };
 }
 

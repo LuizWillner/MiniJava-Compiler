@@ -175,15 +175,15 @@ public class Main {
 
             // A análise sintática só é bem-sucedida se o parser retornar um Symbol
             // e o valor dentro dele for uma instância de ASTNode.
-            if (result != null && result.value instanceof ASTNode) {
+            if (!miniJavaParser.hasErrors() && result != null && result.value instanceof ASTNode) {
                 System.out.println("\nAnalise sintatica concluada com sucesso!");
                 ASTNode ast = (ASTNode) result.value;
                 System.out.println("\n--- Árvore Sintática (AST) ---");
                 ast.print("");
             } else {
-                // Se result for nulo, significa que um erro sintático irrecuperável ocorreu.
+                // Se hasErrors() for true, significa que um erro sintático ocorreu.
                 // A mensagem de erro já foi impressa pelo método report_error do parser.
-                System.err.println("\nFalha na analise sintatica. A AST nao pode ser gerada.");
+                System.err.println("\nFalha na analise sintatica. A AST nao pode ser gerada devido a erros.");
             }
 
         } catch (Exception e) {
