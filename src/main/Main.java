@@ -161,8 +161,11 @@ public class Main {
         System.out.println("--- Fim da verificação léxica ---");
         if (scannerOK)
             System.out.println("\nScanner OK — nenhum erro léxico encontrado!");
-        else
-            System.out.println("\nScanner apresentou erros! O Parser ainda tentará continuar...");
+        else {
+            System.out.println("\nScanner apresentou erros! Abortando execução do parser.");
+            throw new Exception("Erros léxicos detectados.");
+        }
+
 
         System.out.println("\n--- Iniciando Análise Sintática ---");
 
