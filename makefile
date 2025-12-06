@@ -23,7 +23,7 @@ parser:
 
 compile:
 	mkdir -p bin
-	$(JAVAC) -cp "$(CP)" -d bin src/main/Main.java src/minijava/*.java
+	$(JAVAC) -cp "$(CP)" -d bin src/main/Main.java src/minijava/*.java src/calculator/*.java
 
 run:
 	$(JAVA) -cp "$(BINCP)" main.Main

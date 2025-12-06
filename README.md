@@ -52,7 +52,7 @@ make run
 ### macOS/Linux
 ```bash
 # Compilar
-javac -cp ".:src:tools/java-cup-11b-runtime.jar" -d bin src/main/Main.java src/minijava/*.java
+javac -cp ".:src:tools/java-cup-11b-runtime.jar" -d bin src/main/Main.java src/minijava/*.java src/calculator/*.java
 
 # Executar
 java -cp "bin:tools/java-cup-11b-runtime.jar" main.Main
@@ -61,7 +61,7 @@ java -cp "bin:tools/java-cup-11b-runtime.jar" main.Main
 ### Windows
 ```bash
 # Compilar
-javac -cp ".;src;tools/java-cup-11b-runtime.jar" -d bin src/main/Main.java src/minijava/*.java
+javac -cp ".;src;tools/java-cup-11b-runtime.jar" -d bin src/main/Main.java src/minijava/*.java src/calculator/*.java
 
 # Executar
 java -cp "bin;tools/java-cup-11b-runtime.jar" main.Main
