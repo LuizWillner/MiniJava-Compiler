@@ -1,375 +1,475 @@
-package com.compiladores;
-
+package minijava;
 import java_cup.runtime.*;
-import java.util.ArrayList;
-import java.util.List;
-import utils.Arvore;
+import minijava.ASTNode;
 
 parser code {:
-    private List<String> erros = new ArrayList<>();
-
-    public List<String> getErros() {
-        return erros;
+    public void report_error(String message, Object info) {
+        StringBuilder m = new StringBuilder("Erro de Sintaxe");
+        if (info instanceof java_cup.runtime.Symbol) {
+            java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
+            if (s.left >= 0) {
+                m.append(" na linha "+(s.left+1));
+                if (s.right >= 0)
+                    m.append(", coluna "+(s.right+1));
+            }
+        }
+        m.append(" : "+message);
+        System.err.println(m);
     }
 
-    @Override
-    public void syntax_error(Symbol s) {
-        // Pega a linha e coluna do token atual (onde deu erro)
-        int linha = s.left + 1; // +1 porque costuma começar em 0
-        int coluna = s.right + 1;
-
-        String mensagem = "Erro sintático na linha " + linha + ", coluna " + coluna + ". Token inesperado: " + s.value;
-
-        // Adiciona na lista em vez de dar System.out.println
-        erros.add(mensagem);
-    }
-
-    @Override
-    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
-        // Apenas registra e deixa o parser finalizar o que der
-        String msg = "Erro fatal (irrecuperável) na linha " + (s.left+1);
-        erros.add(msg);
+    public void report_fatal_error(String message, Object info) {
+        report_error(message, info);
     }
 :};
 
-/* Terminais (tokens retornados pelo scanner) */
-terminal CLASS, EXTENDS;
-terminal PUBLIC, STATIC, VOID, MAIN;
-terminal RETURN, IF, ELSE, WHILE;
-terminal TRUE, FALSE, THIS, NEW;
-terminal INT, BOOLEAN, STRING;
-terminal INTEGER;
-terminal ID;
-terminal ATRIBUICAO;
-terminal E;              // &&
-terminal MENOR;          // <
-terminal ADICAO;         // +
-terminal SUBTRACAO;      // -
-terminal MULTIPLICACAO;  // *
-terminal NAO;            // !
-terminal PONTO_VIRGULA, VIRGULA, PONTO;
-terminal ABRE_PARENTESES, FECHA_PARENTESES;
-terminal ABRE_CHAVES, FECHA_CHAVES;
-terminal ABRE_COLCHETES, FECHA_COLCHETES;
-terminal ERRO;
+/* Terminais */
+terminal CLASS, PUBLIC, STATIC, VOID, MAIN, EXTENDS, RETURN;
+terminal INT, BOOLEAN, STRING_TYPE;
+terminal IF, ELSE, WHILE;
+terminal TRUE, FALSE, THIS, NEW, LENGTH, PRINT;
+terminal AND, LESSTHAN, PLUS, MINUS, MULT, NOT;
+terminal ASSIGN, SEMICOL, COMMA, DOT;
+terminal LBRACK, RBRACK, LPAREN, RPAREN, LBRACE, RBRACE;
+terminal String ID, NUMBER;
+terminal ERROR;
 
-/* Não-Terminais */
-non terminal Goal;
-non terminal MainClass;
-non terminal ClassDeclaration;
-non terminal VarDeclaration;
-non terminal MethodDeclaration;
-non terminal Type;
-non terminal Statement;
-non terminal Expression;
-
-/* Novos Não-Terminais Auxiliares para Listas (Substituindo o *) */
-non terminal ClassDeclarationList;
-non terminal VarDeclarationList;
-non terminal MethodDeclarationList;
-non terminal StatementList;
-non terminal FormalParamList, FormalParamRest;
-non terminal ExpressionList, ExpressionRest;
+/* Não-terminais */
+/* Não-terminais */
+non terminal ASTNode Goal, MainClass, ClassDeclaration;
+non terminal ASTNode VarDeclaration, MethodDeclaration;
+non terminal ASTNode Type, Statement, Expression;
+non terminal ASTNode ClassDeclarationList, VarDeclarationList, MethodDeclarationList;
+non terminal ASTNode StatementList, ExpressionList, ParameterList, Parameter;
 
 /* Precedência */
-precedence left E;
-precedence left MENOR;
-precedence left ADICAO, SUBTRACAO;
-precedence left MULTIPLICACAO;
-precedence right NAO;
+precedence left AND;
+precedence left LESSTHAN;
+precedence left PLUS, MINUS;
+precedence left MULT;
+precedence right NOT;
+precedence left DOT, LBRACK;
 
+/* Gramática */
 start with Goal;
 
-/* ================= REGRAS DA GRAMÁTICA ================= */
-
-Goal ::= MainClass:m ClassDeclarationList:l {:
-        Arvore raiz = new Arvore("Goal");
-        raiz.addFilho((Arvore) m);
-        raiz.addFilho((Arvore) l);
-        RESULT = raiz;
-    :};
-
-/* MainClass */
-MainClass ::= CLASS ID:nome ABRE_CHAVES
-              PUBLIC STATIC VOID MAIN ABRE_PARENTESES STRING ABRE_COLCHETES FECHA_COLCHETES ID:args FECHA_PARENTESES
-              ABRE_CHAVES Statement:s FECHA_CHAVES
-              FECHA_CHAVES
+Goal ::=
+    MainClass:mc ClassDeclarationList:cdl
     {:
-        Arvore node = new Arvore("MainClass");
-        node.addFilho(new Arvore("ID_Class", (String) nome));
-        node.addFilho(new Arvore("Args",(String)  args));
-        node.addFilho((Arvore) s);
-        RESULT = node;
-    :};
-
-/* Lista de Declarações de Classe */
-ClassDeclarationList ::= ClassDeclaration:c ClassDeclarationList:l
-    {:
-        Arvore node = new Arvore("ClassDeclarationList");
-        node.addFilho((Arvore) c);
-        node.addFilho((Arvore) l);
-        RESULT = node;
+        ASTNode goal = new ASTNode("Goal");
+        goal.addChild(mc);
+        if (cdl != null) goal.addChild(cdl);
+        RESULT = goal;
     :}
-    | /* vazio */
-    {: RESULT = null; :}
+    | MainClass:mc
+    {:
+        ASTNode goal = new ASTNode("Goal");
+        goal.addChild(mc);
+        RESULT = goal;
+    :}
     ;
 
-/* ClassDeclaration */
-ClassDeclaration ::= CLASS ID:nome EXTENDS ID:pai ABRE_CHAVES VarDeclarationList:vl MethodDeclarationList:ml FECHA_CHAVES
+ClassDeclarationList ::=
+    ClassDeclaration:cd
     {:
-        Arvore node = new Arvore("ClassDeclaration");
-        node.addFilho(new Arvore("ID", (String) nome));
-        node.addFilho(new Arvore("Extends", (String) pai));
-        node.addFilho((Arvore)vl);
-        node.addFilho((Arvore)ml);
-        RESULT = node;
+        ASTNode list = new ASTNode("ClassDeclarationList");
+        list.addChild(cd);
+        RESULT = list;
     :}
-    | CLASS ID:nome ABRE_CHAVES VarDeclarationList:vl MethodDeclarationList:ml FECHA_CHAVES
+    | ClassDeclarationList:cdl ClassDeclaration:cd
     {:
-        Arvore node = new Arvore("ClassDeclaration");
-        node.addFilho((Arvore)new Arvore("ID", (String) nome));
-        node.addFilho((Arvore)vl);
-        node.addFilho((Arvore)ml);
-        RESULT = node;
-    :};
-
-/* Listas de Variáveis e Métodos */
-VarDeclarationList ::= VarDeclarationList:l VarDeclaration:v
-    {:
-        // Se a lista já existe, adicionamos nela, senão criamos
-        Arvore node;
-        if (l == null) node = new Arvore("VarDeclarationList");
-        else node =  (Arvore) l;
-
-        node.addFilho((Arvore)v);
-        RESULT = node;
+        cdl.addChild(cd);
+        RESULT = cdl;
     :}
-    | /* vazio */
-    {: RESULT = new Arvore("VarDeclarationList"); :}
     ;
 
-MethodDeclarationList ::= MethodDeclarationList:l MethodDeclaration:m
+MainClass ::=
+    CLASS ID:name LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING_TYPE LBRACK RBRACK ID:args RPAREN LBRACE Statement:stmt RBRACE RBRACE
     {:
-        Arvore node;
-        if (l == null) node = new Arvore("MethodDeclarationList");
-        else node = (Arvore) l;
-
-        node.addFilho((Arvore)m);
-        RESULT = node;
+        ASTNode mainClass = new ASTNode("MainClass", name);
+        ASTNode argsNode = new ASTNode("Args", args);
+        mainClass.addChild(argsNode);
+        mainClass.addChild(stmt);
+        RESULT = mainClass;
     :}
-    | /* vazio */
-    {: RESULT = new Arvore("MethodDeclarationList"); :}
     ;
 
-/* VarDeclaration */
-VarDeclaration ::= Type:t ID:nome PONTO_VIRGULA
+ClassDeclaration ::=
+    CLASS ID:name LBRACE VarDeclarationList:vdl MethodDeclarationList:mdl RBRACE
     {:
-        Arvore node = new Arvore("VarDeclaration");
-        node.addFilho((Arvore)t);
-        node.addFilho((Arvore)new Arvore("ID", (String) nome));
-        RESULT = node;
-    :};
-
-/* MethodDeclaration */
-MethodDeclaration ::= PUBLIC Type:t ID:nome ABRE_PARENTESES FormalParamList:params FECHA_PARENTESES
-                      ABRE_CHAVES VarDeclarationList:vars StatementList:stmts RETURN Expression:ret PONTO_VIRGULA FECHA_CHAVES
-    {:
-        Arvore node = new Arvore("MethodDeclaration");
-        node.addFilho((Arvore)t);
-        node.addFilho(new Arvore("ID", (String) nome));
-        node.addFilho((Arvore)params);
-        node.addFilho((Arvore)vars);
-        node.addFilho((Arvore)stmts);
-
-        Arvore retNode = new Arvore("Return");
-        retNode.addFilho((Arvore)ret);
-        node.addFilho((Arvore)retNode);
-
-        RESULT = node;
+        ASTNode classDecl = new ASTNode("ClassDeclaration", name);
+        if (vdl != null) classDecl.addChild(vdl);
+        if (mdl != null) classDecl.addChild(mdl);
+        RESULT = classDecl;
     :}
-    | PUBLIC Type:t ID:nome ABRE_PARENTESES FECHA_PARENTESES
-      ABRE_CHAVES VarDeclarationList:vars StatementList:stmts RETURN Expression:ret PONTO_VIRGULA FECHA_CHAVES
+    | CLASS ID:name LBRACE VarDeclarationList:vdl RBRACE
     {:
-        Arvore node = new Arvore("MethodDeclaration");
-        node.addFilho((Arvore)t);
-        node.addFilho(new Arvore("ID", (String) nome));
-        node.addFilho(new Arvore("NoParams"));
-        node.addFilho((Arvore)vars);
-        node.addFilho((Arvore)stmts);
-
-        Arvore retNode = new Arvore("Return");
-        retNode.addFilho((Arvore)ret);
-        node.addFilho((Arvore)retNode);
-
-        RESULT = node;
-    :};
-
-/* Lista de Parâmetros Formais */
-FormalParamList ::= Type:t ID:nome FormalParamRest:rest
-    {:
-        Arvore node = new Arvore("FormalParamList");
-        Arvore param = new Arvore("Param");
-        param.addFilho((Arvore)t);
-        param.addFilho((Arvore)new Arvore("ID", (String) nome));
-
-        node.addFilho((Arvore)param);
-        node.addFilho((Arvore)rest);
-        RESULT = node;
-    :};
-
-FormalParamRest ::= VIRGULA Type:t ID:nome FormalParamRest:rest
-    {:
-        Arvore node = new Arvore("ParamRest");
-        Arvore param = new Arvore("Param");
-        param.addFilho((Arvore)t);
-        param.addFilho(new Arvore("ID", (String) nome));
-
-        node.addFilho((Arvore)param);
-        node.addFilho((Arvore)rest);
-        RESULT = node;
+        ASTNode classDecl = new ASTNode("ClassDeclaration", name);
+        if (vdl != null) classDecl.addChild(vdl);
+        RESULT = classDecl;
     :}
-    | /* vazio */
-    {: RESULT = null; :}
+    | CLASS ID:name LBRACE MethodDeclarationList:mdl RBRACE
+    {:
+        ASTNode classDecl = new ASTNode("ClassDeclaration", name);
+        if (mdl != null) classDecl.addChild(mdl);
+        RESULT = classDecl;
+    :}
+    | CLASS ID:name LBRACE RBRACE
+    {:
+        RESULT = new ASTNode("ClassDeclaration", name);
+    :}
+    | CLASS ID:name EXTENDS ID:parent LBRACE VarDeclarationList:vdl MethodDeclarationList:mdl RBRACE
+    {:
+        ASTNode classDecl = new ASTNode("ClassDeclaration", name);
+        ASTNode extendsNode = new ASTNode("Extends", parent);
+        classDecl.addChild(extendsNode);
+        if (vdl != null) classDecl.addChild(vdl);
+        if (mdl != null) classDecl.addChild(mdl);
+        RESULT = classDecl;
+    :}
+    | CLASS ID:name EXTENDS ID:parent LBRACE VarDeclarationList:vdl RBRACE
+    {:
+        ASTNode classDecl = new ASTNode("ClassDeclaration", name);
+        ASTNode extendsNode = new ASTNode("Extends", parent);
+        classDecl.addChild(extendsNode);
+        if (vdl != null) classDecl.addChild(vdl);
+        RESULT = classDecl;
+    :}
+    | CLASS ID:name EXTENDS ID:parent LBRACE MethodDeclarationList:mdl RBRACE
+    {:
+        ASTNode classDecl = new ASTNode("ClassDeclaration", name);
+        ASTNode extendsNode = new ASTNode("Extends", parent);
+        classDecl.addChild(extendsNode);
+        if (mdl != null) classDecl.addChild(mdl);
+        RESULT = classDecl;
+    :}
+    | CLASS ID:name EXTENDS ID:parent LBRACE RBRACE
+    {:
+        ASTNode classDecl = new ASTNode("ClassDeclaration", name);
+        ASTNode extendsNode = new ASTNode("Extends", parent);
+        classDecl.addChild(extendsNode);
+        RESULT = classDecl;
+    :}
     ;
 
-/* Tipos */
-Type ::= INT ABRE_COLCHETES FECHA_COLCHETES {: RESULT = new Arvore("Type", "int[]"); :}
-       | BOOLEAN                            {: RESULT = new Arvore("Type", "boolean"); :}
-       | INT                                {: RESULT = new Arvore("Type", "int"); :}
-       | ID:nome                            {: RESULT = new Arvore("Type", (String) nome); :}
-       ;
-
-/* Lista de Statements */
-StatementList ::= Statement:s StatementList:l
+VarDeclarationList ::=
+    VarDeclaration:vd
     {:
-        Arvore node = new Arvore("StatementList");
-        node.addFilho((Arvore)s);
-        node.addFilho((Arvore)l);
-        RESULT = node;
+        ASTNode list = new ASTNode("VarDeclarationList");
+        list.addChild(vd);
+        RESULT = list;
     :}
-    | /* vazio */
-    {: RESULT = null; :}
+    | VarDeclarationList:vdl VarDeclaration:vd
+    {:
+        vdl.addChild(vd);
+        RESULT = vdl;
+    :}
     ;
 
-/* Statements */
-Statement ::= ABRE_CHAVES StatementList:l FECHA_CHAVES
-            {:
-                Arvore node = new Arvore("Block");
-                node.addFilho((Arvore)l);
-                RESULT = node;
-            :}
-            | IF ABRE_PARENTESES Expression:e FECHA_PARENTESES Statement:s1 ELSE Statement:s2
-            {:
-                Arvore node = new Arvore("IfElse");
-                node.addFilho((Arvore)e);
-                node.addFilho((Arvore)s1);
-                node.addFilho((Arvore)s2);
-                RESULT = node;
-            :}
-            | WHILE ABRE_PARENTESES Expression:e FECHA_PARENTESES Statement:s
-            {:
-                Arvore node = new Arvore("While");
-                node.addFilho((Arvore)e);
-                node.addFilho((Arvore)s);
-                RESULT = node;
-            :}
-            | ID:id1 PONTO ID:id2 PONTO ID:id3 ABRE_PARENTESES Expression:e FECHA_PARENTESES PONTO_VIRGULA
-            {:
-                // Detecta System.out.println
-                Arvore node = new Arvore("Print");
-                // node.addFilho((Arvore)new Arvore("Call", (String) id1 + "." + (String) id2 + "." + (String) id3)); // Opcional
-                node.addFilho((Arvore)e);
-                RESULT = node;
-            :}
-            | ID:nome ATRIBUICAO Expression:e PONTO_VIRGULA
-            {:
-                Arvore node = new Arvore("Atribuicao");
-                node.addFilho((Arvore)new Arvore("ID", (String)nome));
-                node.addFilho((Arvore)e);
-                RESULT = node;
-            :}
-            | ID:nome ABRE_COLCHETES Expression:idx FECHA_COLCHETES ATRIBUICAO Expression:val PONTO_VIRGULA
-            {:
-                Arvore node = new Arvore("AtribuicaoArray");
-                node.addFilho((Arvore)new Arvore("ID",(String) nome));
-                node.addFilho((Arvore)idx);
-                node.addFilho((Arvore)val);
-                RESULT = node;
-            :}
-            ;
-
-/* Expressões */
-Expression ::= Expression:e1 E Expression:e2
-             {: Arvore node = new Arvore("And"); node.addFilho((Arvore)e1); node.addFilho((Arvore)e2); RESULT = node; :}
-             | Expression:e1 MENOR Expression:e2
-             {: Arvore node = new Arvore("Menor"); node.addFilho((Arvore)e1); node.addFilho((Arvore)e2); RESULT = node; :}
-             | Expression:e1 ADICAO Expression:e2
-             {: Arvore node = new Arvore("Soma"); node.addFilho((Arvore)e1); node.addFilho((Arvore)e2); RESULT = node; :}
-             | Expression:e1 SUBTRACAO Expression:e2
-             {: Arvore node = new Arvore("Subtracao"); node.addFilho((Arvore)e1); node.addFilho((Arvore)e2); RESULT = node; :}
-             | Expression:e1 MULTIPLICACAO Expression:e2
-             {: Arvore node = new Arvore("Multiplicacao"); node.addFilho((Arvore)e1); node.addFilho((Arvore)e2); RESULT = node; :}
-             | Expression:e1 ABRE_COLCHETES Expression:e2 FECHA_COLCHETES
-             {: Arvore node = new Arvore("ArrayAccess"); node.addFilho((Arvore)e1); node.addFilho((Arvore)e2); RESULT = node; :}
-             | Expression:e1 PONTO ID:metodo ABRE_PARENTESES ExpressionList:args FECHA_PARENTESES
-             {:
-                Arvore node = new Arvore("CallMethod");
-                node.addFilho((Arvore)e1);
-                node.addFilho((Arvore)new Arvore("ID", (String) metodo));
-                node.addFilho((Arvore)args);
-                RESULT = node;
-             :}
-             | Expression:e1 PONTO ID:metodo ABRE_PARENTESES FECHA_PARENTESES
-             {:
-                Arvore node = new Arvore("CallMethod");
-                node.addFilho((Arvore)e1);
-                node.addFilho((Arvore)new Arvore("ID", (String) metodo));
-                RESULT = node;
-             :}
-             | Expression:e1 PONTO ID:propriedade
-             {:
-                // Geralmente usado para .length
-                Arvore node = new Arvore("PropertyAccess");
-                node.addFilho((Arvore)e1);
-                node.addFilho((Arvore)new Arvore("ID", (String) propriedade));
-                RESULT = node;
-             :}
-             | INTEGER:valor
-             {: RESULT = new Arvore("Integer", valor.toString()); :}
-             | TRUE
-             {: RESULT = new Arvore("True"); :}
-             | FALSE
-             {: RESULT = new Arvore("False"); :}
-             | ID:nome
-             {: RESULT = new Arvore("ID", (String) nome); :}
-             | THIS
-             {: RESULT = new Arvore("This"); :}
-             | NEW INT ABRE_COLCHETES Expression:e FECHA_COLCHETES
-             {: Arvore node = new Arvore("NewIntArray"); node.addFilho((Arvore)e); RESULT = node; :}
-             | NEW ID:nome ABRE_PARENTESES FECHA_PARENTESES
-             {: Arvore node = new Arvore("NewObject"); node.addFilho((Arvore)new Arvore("ID", (String) nome)); RESULT = node; :}
-             | NAO Expression:e
-             {: Arvore node = new Arvore("Not"); node.addFilho((Arvore)e); RESULT = node; :}
-             | ABRE_PARENTESES Expression:e FECHA_PARENTESES
-             {: RESULT = e; :}
-             ;
-
-/* Lista de Expressões (Argumentos de função) */
-ExpressionList ::= Expression:e ExpressionRest:rest
+VarDeclaration ::=
+    Type:t ID:name SEMICOL
     {:
-        Arvore node = new Arvore("ExpressionList");
-        node.addFilho((Arvore)e);
-        node.addFilho((Arvore)rest);
-        RESULT = node;
-    :};
-
-ExpressionRest ::= VIRGULA Expression:e ExpressionRest:rest
-    {:
-        Arvore node = new Arvore("ExpressionRest");
-        node.addFilho((Arvore)e);
-        node.addFilho((Arvore)rest);
-        RESULT = node;
+        ASTNode varDecl = new ASTNode("VarDeclaration", name);
+        varDecl.addChild(t);
+        RESULT = varDecl;
     :}
-    | /* vazio */
-    {: RESULT = null; :}
+    ;
+
+MethodDeclarationList ::=
+    MethodDeclaration:md
+    {:
+        ASTNode list = new ASTNode("MethodDeclarationList");
+        list.addChild(md);
+        RESULT = list;
+    :}
+    | MethodDeclarationList:mdl MethodDeclaration:md
+    {:
+        mdl.addChild(md);
+        RESULT = mdl;
+    :}
+    ;
+
+MethodDeclaration ::=
+    PUBLIC Type:t ID:name LPAREN ParameterList:pl RPAREN LBRACE VarDeclarationList:vdl StatementList:sl RETURN Expression:e SEMICOL RBRACE
+    {:
+        ASTNode method = new ASTNode("MethodDeclaration", name);
+        method.addChild(t);
+        if (pl != null) method.addChild(pl);
+        if (vdl != null) method.addChild(vdl);
+        if (sl != null) method.addChild(sl);
+        ASTNode returnNode = new ASTNode("Return");
+        returnNode.addChild(e);
+        method.addChild(returnNode);
+        RESULT = method;
+    :}
+    | PUBLIC Type:t ID:name LPAREN RPAREN LBRACE VarDeclarationList:vdl StatementList:sl RETURN Expression:e SEMICOL RBRACE
+    {:
+        ASTNode method = new ASTNode("MethodDeclaration", name);
+        method.addChild(t);
+        if (vdl != null) method.addChild(vdl);
+        if (sl != null) method.addChild(sl);
+        ASTNode returnNode = new ASTNode("Return");
+        returnNode.addChild(e);
+        method.addChild(returnNode);
+        RESULT = method;
+    :}
+    | PUBLIC Type:t ID:name LPAREN ParameterList:pl RPAREN LBRACE StatementList:sl RETURN Expression:e SEMICOL RBRACE
+    {:
+        ASTNode method = new ASTNode("MethodDeclaration", name);
+        method.addChild(t);
+        if (pl != null) method.addChild(pl);
+        if (sl != null) method.addChild(sl);
+        ASTNode returnNode = new ASTNode("Return");
+        returnNode.addChild(e);
+        method.addChild(returnNode);
+        RESULT = method;
+    :}
+    | PUBLIC Type:t ID:name LPAREN RPAREN LBRACE StatementList:sl RETURN Expression:e SEMICOL RBRACE
+    {:
+        ASTNode method = new ASTNode("MethodDeclaration", name);
+        method.addChild(t);
+        if (sl != null) method.addChild(sl);
+        ASTNode returnNode = new ASTNode("Return");
+        returnNode.addChild(e);
+        method.addChild(returnNode);
+        RESULT = method;
+    :}
+    | PUBLIC Type:t ID:name LPAREN ParameterList:pl RPAREN LBRACE VarDeclarationList:vdl RETURN Expression:e SEMICOL RBRACE
+    {:
+        ASTNode method = new ASTNode("MethodDeclaration", name);
+        method.addChild(t);
+        if (pl != null) method.addChild(pl);
+        if (vdl != null) method.addChild(vdl);
+        ASTNode returnNode = new ASTNode("Return");
+        returnNode.addChild(e);
+        method.addChild(returnNode);
+        RESULT = method;
+    :}
+    | PUBLIC Type:t ID:name LPAREN RPAREN LBRACE VarDeclarationList:vdl RETURN Expression:e SEMICOL RBRACE
+    {:
+        ASTNode method = new ASTNode("MethodDeclaration", name);
+        method.addChild(t);
+        if (vdl != null) method.addChild(vdl);
+        ASTNode returnNode = new ASTNode("Return");
+        returnNode.addChild(e);
+        method.addChild(returnNode);
+        RESULT = method;
+    :}
+    | PUBLIC Type:t ID:name LPAREN ParameterList:pl RPAREN LBRACE RETURN Expression:e SEMICOL RBRACE
+    {:
+        ASTNode method = new ASTNode("MethodDeclaration", name);
+        method.addChild(t);
+        if (pl != null) method.addChild(pl);
+        ASTNode returnNode = new ASTNode("Return");
+        returnNode.addChild(e);
+        method.addChild(returnNode);
+        RESULT = method;
+    :}
+    | PUBLIC Type:t ID:name LPAREN RPAREN LBRACE RETURN Expression:e SEMICOL RBRACE
+    {:
+        ASTNode method = new ASTNode("MethodDeclaration", name);
+        method.addChild(t);
+        ASTNode returnNode = new ASTNode("Return");
+        returnNode.addChild(e);
+        method.addChild(returnNode);
+        RESULT = method;
+    :}
+    ;
+
+ParameterList ::=
+    Parameter:p
+    {:
+        ASTNode list = new ASTNode("ParameterList");
+        list.addChild(p);
+        RESULT = list;
+    :}
+    | ParameterList:pl COMMA Parameter:p
+    {:
+        pl.addChild(p);
+        RESULT = pl;
+    :}
+    ;
+
+Parameter ::=
+    Type:t ID:name
+    {:
+        ASTNode param = new ASTNode("Parameter", name);
+        param.addChild(t);
+        RESULT = param;
+    :}
+    ;
+
+Type ::=
+    INT LBRACK RBRACK
+    {: RESULT = new ASTNode("Type", "int[]"); :}
+    | BOOLEAN
+    {: RESULT = new ASTNode("Type", "boolean"); :}
+    | INT
+    {: RESULT = new ASTNode("Type", "int"); :}
+    | ID:name
+    {: RESULT = new ASTNode("Type", name); :}
+    ;
+
+StatementList ::=
+    Statement:s
+    {:
+        ASTNode list = new ASTNode("StatementList");
+        list.addChild(s);
+        RESULT = list;
+    :}
+    | StatementList:sl Statement:s
+    {:
+        sl.addChild(s);
+        RESULT = sl;
+    :}
+    ;
+
+Statement ::=
+    LBRACE StatementList:sl RBRACE
+    {:
+        ASTNode block = new ASTNode("Block");
+        if (sl != null) block.addChild(sl);
+        RESULT = block;
+    :}
+    | LBRACE RBRACE
+    {: RESULT = new ASTNode("Block"); :}
+    | IF LPAREN Expression:e RPAREN Statement:s1 ELSE Statement:s2
+    {:
+        ASTNode ifStmt = new ASTNode("If");
+        ifStmt.addChild(e);
+        ifStmt.addChild(s1);
+        ASTNode elseStmt = new ASTNode("Else");
+        elseStmt.addChild(s2);
+        ifStmt.addChild(elseStmt);
+        RESULT = ifStmt;
+    :}
+    | WHILE LPAREN Expression:e RPAREN Statement:s
+    {:
+        ASTNode whileStmt = new ASTNode("While");
+        whileStmt.addChild(e);
+        whileStmt.addChild(s);
+        RESULT = whileStmt;
+    :}
+    | PRINT LPAREN Expression:e RPAREN SEMICOL
+    {:
+        ASTNode printStmt = new ASTNode("Print");
+        printStmt.addChild(e);
+        RESULT = printStmt;
+    :}
+    | ID:name ASSIGN Expression:e SEMICOL
+    {:
+        ASTNode assign = new ASTNode("Assign", name);
+        assign.addChild(e);
+        RESULT = assign;
+    :}
+    | ID:name LBRACK Expression:e1 RBRACK ASSIGN Expression:e2 SEMICOL
+    {:
+        ASTNode arrayAssign = new ASTNode("ArrayAssign", name);
+        arrayAssign.addChild(e1);
+        arrayAssign.addChild(e2);
+        RESULT = arrayAssign;
+    :}
+    ;
+
+Expression ::=
+    Expression:e1 AND Expression:e2
+    {:
+        ASTNode and = new ASTNode("And");
+        and.addChild(e1);
+        and.addChild(e2);
+        RESULT = and;
+    :}
+    | Expression:e1 LESSTHAN Expression:e2
+    {:
+        ASTNode lessThan = new ASTNode("LessThan");
+        lessThan.addChild(e1);
+        lessThan.addChild(e2);
+        RESULT = lessThan;
+    :}
+    | Expression:e1 PLUS Expression:e2
+    {:
+        ASTNode plus = new ASTNode("Plus");
+        plus.addChild(e1);
+        plus.addChild(e2);
+        RESULT = plus;
+    :}
+    | Expression:e1 MINUS Expression:e2
+    {:
+        ASTNode minus = new ASTNode("Minus");
+        minus.addChild(e1);
+        minus.addChild(e2);
+        RESULT = minus;
+    :}
+    | Expression:e1 MULT Expression:e2
+    {:
+        ASTNode mult = new ASTNode("Mult");
+        mult.addChild(e1);
+        mult.addChild(e2);
+        RESULT = mult;
+    :}
+    | Expression:e1 LBRACK Expression:e2 RBRACK
+    {:
+        ASTNode arrayAccess = new ASTNode("ArrayAccess");
+        arrayAccess.addChild(e1);
+        arrayAccess.addChild(e2);
+        RESULT = arrayAccess;
+    :}
+    | Expression:e DOT LENGTH
+    {:
+        ASTNode length = new ASTNode("Length");
+        length.addChild(e);
+        RESULT = length;
+    :}
+    | Expression:e DOT ID:method LPAREN ExpressionList:el RPAREN
+    {:
+        ASTNode call = new ASTNode("MethodCall", method);
+        call.addChild(e);
+        if (el != null) call.addChild(el);
+        RESULT = call;
+    :}
+    | Expression:e DOT ID:method LPAREN RPAREN
+    {:
+        ASTNode call = new ASTNode("MethodCall", method);
+        call.addChild(e);
+        RESULT = call;
+    :}
+    | NUMBER:n
+    {: RESULT = new ASTNode("Number", n); :}
+    | TRUE
+    {: RESULT = new ASTNode("Boolean", "true"); :}
+    | FALSE
+    {: RESULT = new ASTNode("Boolean", "false"); :}
+    | ID:name
+    {: RESULT = new ASTNode("Identifier", name); :}
+    | THIS
+    {: RESULT = new ASTNode("This"); :}
+    | NEW INT LBRACK Expression:e RBRACK
+    {:
+        ASTNode newArray = new ASTNode("NewArray");
+        newArray.addChild(e);
+        RESULT = newArray;
+    :}
+    | NEW ID:name LPAREN RPAREN
+    {: RESULT = new ASTNode("NewObject", name); :}
+    | NOT Expression:e
+    {:
+        ASTNode not = new ASTNode("Not");
+        not.addChild(e);
+        RESULT = not;
+    :}
+    | LPAREN Expression:e RPAREN
+    {: RESULT = e; :}
+    ;
+
+ExpressionList ::=
+    Expression:e
+    {:
+        ASTNode list = new ASTNode("ExpressionList");
+        list.addChild(e);
+        RESULT = list;
+    :}
+    | ExpressionList:el COMMA Expression:e
+    {:
+        el.addChild(e);
+        RESULT = el;
+    :}
     ;

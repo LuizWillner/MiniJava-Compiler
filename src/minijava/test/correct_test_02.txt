@@ -1,6 +1,4 @@
-// Teste de comentario +
-
-class MinhaClasse extends OutraClasse {
+class MinhaClasse {
     public static void main(String[] args) {
         System.out.println(new Exemplo().teste(42));
     }
@@ -25,7 +23,7 @@ class Exemplo {
         while (resultado < 100 && condicao) {
             resultado = resultado * 2;
             if (!condicao) {
-                resultado = this.numero + valor;
+                resultado = numero + valor;
             }
         }
         
