@@ -28,17 +28,17 @@ package calculator;
 DIGIT = [0-9]
 INTEGER = {DIGIT}+
 FLOAT = {INTEGER}\.{INTEGER}
-NUMBER = {FLOAT} | {INTEGER}
 WHITESPACE = [ \t\n\r ]+
 
 %%
 
-{FLOAT}            { return new Token("FLOAT", yytext(), yyline, yycolumn); }
+{FLOAT}              { return new Token("FLOAT", yytext(), yyline, yycolumn); }
 {INTEGER}            { return new Token("INTEGER", yytext(), yyline, yycolumn); }
 "+"                  { return new Token("PLUS", yytext(), yyline, yycolumn); }
 "-"                  { return new Token("MINUS", yytext(), yyline, yycolumn); }
 "*"                  { return new Token("MULT", yytext(), yyline, yycolumn); }
-"/" | "//"           { return new Token("DIV", yytext(), yyline, yycolumn); }
+"//"                 { return new Token("INTDIV", yytext(), yyline, yycolumn); }
+"/"                  { return new Token("DIV", yytext(), yyline, yycolumn); }
 "**"                 { return new Token("POW", yytext(), yyline, yycolumn); }
 "("                  { return new Token("LPAREN", yytext(), yyline, yycolumn); }
 ")"                  { return new Token("RPAREN", yytext(), yyline, yycolumn); }

@@ -3,7 +3,7 @@
 G1 = {N, T, S, P}
 
 N = {Expr, Term, Power, Factor, Num}
-T = {FLOAT, INTEGER, PLUS, MINUS, MULT, DIV, POW, LPAREN, RPAREN}
+T = {FLOAT, INTEGER, PLUS, MINUS, MULT, DIV, INTDIV, POW, LPAREN, RPAREN}
 S = Expr
 
 P = {
@@ -13,6 +13,7 @@ P = {
 
   Term   → Term MULT Power
          | Term DIV Power
+         | Term INTIDIV Power
          | Power
 
   Power  → Factor POW Power
@@ -31,13 +32,13 @@ P = {
 G1 = {Não-terminais, Terminais, Inicial, Produções}
 
 Não-terminais = {E, T, P, F, N}
-Terminais = {float, int, +, -, x, %, *, (, )}
+Terminais = {float, int, +, -, *, /, //, **, (, )}
 Inicial = E
 
 Produções = {
     E -> E + T | E - T | T
-    T -> T x P | T % P | P
-    P -> F * P | F
+    T -> T * P | T / P | T // P | P
+    P -> F ** P | F
     F -> ( E ) | N
     N -> float | int
 }
@@ -49,7 +50,7 @@ Produções = {
 G1' = {N, T, S, P}
 
 N = {Expr, Expr' Term, Term', Power, Faactor, Num}
-T = {FLOAT, INTEGER, PLUS, MINUS, MULT, DIV, POW, LPAREN, RPAREN}
+T = {FLOAT, INTEGER, PLUS, MINUS, MULT, DIV, INTDIV, POW, LPAREN, RPAREN}
 S = Expr
 P = {
     Expr   -> Term Expr'
@@ -76,13 +77,13 @@ Sem rec. à esquerda:
 G1' = {Não-terminais, Terminais, Inicial, Produções}
 
 Não-terminais = {E, E', T, T', P, F, N}
-Terminais = {float, int, +, -, x, %, *, (, )}
+Terminais = {float, int, +, -, *, /, //, **, (, )}
 Inicial = E
 
 Produções = {
  E -> T E'
  T -> P T'
- P -> F * P
+ P -> F ** P
     | F
  F -> ( E )
     | N
@@ -91,7 +92,8 @@ Produções = {
 E' -> + T E'
     | - T E'
     | ϵ
-T' -> x P T'
-    | % P T'
+T' -> * P T'
+    | / P T'
+    | // P T'
     | ϵ
 }
