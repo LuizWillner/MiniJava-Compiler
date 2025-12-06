@@ -1,0 +1,51 @@
+--- Executando Parser do MiniJava ---
+--- Verificando Scanner (MiniJava) ---
+Token: CLASS Valor: class
+Token: ID Valor: TesteString
+Token: LBRACE Valor: {
+Token: PUBLIC Valor: public
+Token: STATIC Valor: static
+Token: VOID Valor: void
+Token: MAIN Valor: main
+Token: LPAREN Valor: (
+Token: STRING_TYPE Valor: String
+Token: LBRACK Valor: [
+Token: RBRACK Valor: ]
+Token: ID Valor: args
+Token: RPAREN Valor: )
+Token: LBRACE Valor: {
+Token: PRINT Valor: System.out.println
+Token: LPAREN Valor: (
+Token: NEW Valor: new
+Token: ID Valor: Exemplo
+Token: LPAREN Valor: (
+Token: RPAREN Valor: )
+Token: DOT Valor: .
+Token: ID Valor: dois
+Token: LPAREN Valor: (
+Token: RPAREN Valor: )
+Token: RPAREN Valor: )
+Token: SEMICOL Valor: ;
+Token: RBRACE Valor: }
+Token: RBRACE Valor: }
+Token: CLASS Valor: class
+Token: ID Valor: Exemplo
+Token: LBRACE Valor: {
+Token: PUBLIC Valor: public
+Token: ERROR Valor: í
+Erro léxico: símbolo inválido 'í' na linha 9, coluna 12
+Token: ID Valor: nt
+Token: ID Valor: dois
+Token: LPAREN Valor: (
+Token: RPAREN Valor: )
+Token: LBRACE Valor: {
+Token: RETURN Valor: return
+Token: NUMBER Valor: 1
+Token: PLUS Valor: +
+Token: NUMBER Valor: 1
+Token: SEMICOL Valor: ;
+Token: RBRACE Valor: }
+Token: RBRACE Valor: }
+--- Fim da verificação léxica ---
+
+Scanner apresentou erros! Abortando execução do parser.

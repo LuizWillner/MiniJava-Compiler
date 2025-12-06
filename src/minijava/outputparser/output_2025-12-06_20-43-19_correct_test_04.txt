@@ -1,0 +1,187 @@
+--- Executando Parser do MiniJava ---
+--- Verificando Scanner (MiniJava) ---
+Token: CLASS Valor: class
+Token: ID Valor: TesteArray
+Token: LBRACE Valor: {
+Token: PUBLIC Valor: public
+Token: STATIC Valor: static
+Token: VOID Valor: void
+Token: MAIN Valor: main
+Token: LPAREN Valor: (
+Token: STRING_TYPE Valor: String
+Token: LBRACK Valor: [
+Token: RBRACK Valor: ]
+Token: ID Valor: args
+Token: RPAREN Valor: )
+Token: LBRACE Valor: {
+Token: PRINT Valor: System.out.println
+Token: LPAREN Valor: (
+Token: NEW Valor: new
+Token: ID Valor: ArrayOps
+Token: LPAREN Valor: (
+Token: RPAREN Valor: )
+Token: DOT Valor: .
+Token: ID Valor: processArray
+Token: LPAREN Valor: (
+Token: RPAREN Valor: )
+Token: RPAREN Valor: )
+Token: SEMICOL Valor: ;
+Token: RBRACE Valor: }
+Token: RBRACE Valor: }
+Token: CLASS Valor: class
+Token: ID Valor: ArrayOps
+Token: LBRACE Valor: {
+Token: PUBLIC Valor: public
+Token: INT Valor: int
+Token: ID Valor: processArray
+Token: LPAREN Valor: (
+Token: RPAREN Valor: )
+Token: LBRACE Valor: {
+Token: INT Valor: int
+Token: LBRACK Valor: [
+Token: RBRACK Valor: ]
+Token: ID Valor: numeros
+Token: SEMICOL Valor: ;
+Token: INT Valor: int
+Token: ID Valor: tamanho
+Token: SEMICOL Valor: ;
+Token: BOOLEAN Valor: boolean
+Token: ID Valor: encontrou
+Token: SEMICOL Valor: ;
+Token: ID Valor: numeros
+Token: ASSIGN Valor: =
+Token: NEW Valor: new
+Token: INT Valor: int
+Token: LBRACK Valor: [
+Token: NUMBER Valor: 5
+Token: RBRACK Valor: ]
+Token: SEMICOL Valor: ;
+Token: ID Valor: numeros
+Token: LBRACK Valor: [
+Token: NUMBER Valor: 0
+Token: RBRACK Valor: ]
+Token: ASSIGN Valor: =
+Token: NUMBER Valor: 10
+Token: SEMICOL Valor: ;
+Token: ID Valor: numeros
+Token: LBRACK Valor: [
+Token: NUMBER Valor: 1
+Token: RBRACK Valor: ]
+Token: ASSIGN Valor: =
+Token: NUMBER Valor: 20
+Token: SEMICOL Valor: ;
+Token: ID Valor: numeros
+Token: LBRACK Valor: [
+Token: NUMBER Valor: 2
+Token: RBRACK Valor: ]
+Token: ASSIGN Valor: =
+Token: NUMBER Valor: 30
+Token: SEMICOL Valor: ;
+Token: ID Valor: tamanho
+Token: ASSIGN Valor: =
+Token: ID Valor: numeros
+Token: DOT Valor: .
+Token: LENGTH Valor: length
+Token: SEMICOL Valor: ;
+Token: ID Valor: encontrou
+Token: ASSIGN Valor: =
+Token: FALSE Valor: false
+Token: SEMICOL Valor: ;
+Token: IF Valor: if
+Token: LPAREN Valor: (
+Token: ID Valor: numeros
+Token: LBRACK Valor: [
+Token: NUMBER Valor: 0
+Token: RBRACK Valor: ]
+Token: LESSTHAN Valor: <
+Token: ID Valor: numeros
+Token: LBRACK Valor: [
+Token: NUMBER Valor: 1
+Token: RBRACK Valor: ]
+Token: AND Valor: &&
+Token: NOT Valor: !
+Token: ID Valor: encontrou
+Token: RPAREN Valor: )
+Token: LBRACE Valor: {
+Token: ID Valor: encontrou
+Token: ASSIGN Valor: =
+Token: TRUE Valor: true
+Token: SEMICOL Valor: ;
+Token: RBRACE Valor: }
+Token: ELSE Valor: else
+Token: LBRACE Valor: {
+Token: ID Valor: encontrou
+Token: ASSIGN Valor: =
+Token: FALSE Valor: false
+Token: SEMICOL Valor: ;
+Token: RBRACE Valor: }
+Token: RETURN Valor: return
+Token: ID Valor: tamanho
+Token: SEMICOL Valor: ;
+Token: RBRACE Valor: }
+Token: RBRACE Valor: }
+--- Fim da verificação léxica ---
+
+Scanner OK — nenhum erro léxico encontrado!
+
+Analise sintatica concluada com sucesso!
+
+--- Árvore Sintática (AST) ---
+Goal
+  MainClass: TesteArray
+    Args: args
+    Print
+      MethodCall: processArray
+        NewObject: ArrayOps
+  ClassDeclarationList
+    ClassDeclaration: ArrayOps
+      MethodDeclarationList
+        MethodDeclaration: processArray
+          Type: int
+          VarDeclarationList
+            VarDeclaration: numeros
+              Type: int[]
+            VarDeclaration: tamanho
+              Type: int
+            VarDeclaration: encontrou
+              Type: boolean
+          StatementList
+            Assign: numeros
+              NewArray
+                Number: 5
+            ArrayAssign: numeros
+              Number: 0
+              Number: 10
+            ArrayAssign: numeros
+              Number: 1
+              Number: 20
+            ArrayAssign: numeros
+              Number: 2
+              Number: 30
+            Assign: tamanho
+              Length
+                Identifier: numeros
+            Assign: encontrou
+              Boolean: false
+            If
+              And
+                LessThan
+                  ArrayAccess
+                    Identifier: numeros
+                    Number: 0
+                  ArrayAccess
+                    Identifier: numeros
+                    Number: 1
+                Not
+                  Identifier: encontrou
+              Block
+                StatementList
+                  Assign: encontrou
+                    Boolean: true
+              Else
+                Block
+                  StatementList
+                    Assign: encontrou
+                      Boolean: false
+          Return
+            Identifier: tamanho
