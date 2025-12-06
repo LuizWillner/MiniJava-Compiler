@@ -1,52 +1,68 @@
 # MiniJava-Compiler
 Trabalho da disciplina de Compiladores | prof. Flávia Bernardini | 2025.2 | Instituto de Computação | Universidade Federal Fluminense
 
-## Gerando script do scanner
-A aplicação foi desenvolvida utilizando o **IntelliJ** como IDE. Ao fazer alterações em algum arquivo .flex, gere o script do scanner correspondente
+## Pré-requisitos
+- Java JDK 8+
+- Make (já incluído no macOS/Linux)
+- **IntelliJ** como IDE, não é obrigatório, mas é recomendável o seu uso
 
-Para o flex da calculadora:
-```shell
- java -jar tools/jflex-full-1.9.1.jar src/calculator/Calc.flex
+## Compilação Rápida (Makefile)
+Build completo (scanner + parser + compilar) e execução da Main
+```bash
+make all
+
+make run
 ```
 
-Para o flex do MiniJava:
-```shell
- java -jar tools/jflex-full-1.9.1.jar src/minijava/MiniJava.flex
-```
-## Gerando script do parser
-Para compilar .cup (gramática) do MiniJava (Esperando 2 conflitos de ambiguidade ):
-```shell
- java -jar tools/java-cup-11b.jar -parser Parser -symbols sym -destdir src/minijava -expect 2 src/minijava/MiniJava.cup
-
-
-```
-Os conflitos esperados são entre:
-```shell
-VarDeclarationList ::= (empty)
-e
-Type ::= ID
-sob o símbolo ID
-```
-Isto acontece porque, dentro de um método, ao ver ID logo depois de {, o parser não sabe se aquele ID inicia uma declaração de variável (Type ID ;) ou um statement que começa com ID (por exemplo ID = ... ;). Essa ambiguidade é típica em gramáticas Java-like quando Type pode ser ID (tipos de classe) — o parser LR pode resolver (CUP está resolvendo em favor do shift), mas ainda geram conflitos que precisam ser aceitos explicitamente.
-
-## Testando o scanner
-Compile o arquivo .java com 
-```shell
-javac -cp ".;src;tools/java-cup-11b-runtime.jar" -d bin src/main/Main.java src/minijava/MiniJava.java src/minijava/Parser.java src/minijava/sym.java src/minijava/ASTNode.java 
+Limpar arquivos compilados
+```bash
+make clean
 ```
 
-E execute-o com
-```shell
-java -cp "bin;tools/java-cup-11b-runtime.jar" main.Main
+## Comandos Individuais
+
+### Gerando scanner
+```bash
+# MiniJava
+make scanner-minijava
+
+# Calculadora
+make scanner-calc
 ```
 
-## Testando o parser
-Compile o arquivo .java com
-```shell
-javac -cp ".;src;tools/java-cup-11b-runtime.jar" -d bin src/main/Main.java src/minijava/MiniJava.java src/minijava/Parser.java src/minijava/sym.java src/minijava/ASTNode.java 
+### Gerando parser
+```bash
+make parser
 ```
 
-E execute-o com
-```shell
+> **Nota:** São esperados 2 conflitos de ambiguidade entre `VarDeclarationList ::= (empty)` e `Type ::= ID` sob o símbolo ID. Isso é normal em gramáticas Java-like.
+
+### Compilar
+```bash
+make compile
+```
+
+### Executar
+```bash
+make run
+```
+
+## Comandos Manuais (sem Make)
+
+### macOS/Linux
+```bash
+# Compilar
+javac -cp ".:src:tools/java-cup-11b-runtime.jar" -d bin src/main/Main.java src/minijava/*.java src/calculator/*.java
+
+# Executar
+java -cp "bin:tools/java-cup-11b-runtime.jar" main.Main
+```
+
+### Windows
+```bash
+# Compilar
+javac -cp ".;src;tools/java-cup-11b-runtime.jar" -d bin src/main/Main.java src/minijava/*.java src/calculator/*.java
+
+# Executar
 java -cp "bin;tools/java-cup-11b-runtime.jar" main.Main
 ```

@@ -59,6 +59,7 @@ public class Main {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         if (outputFileName.isEmpty()) {
             String timestamp = LocalDateTime.now().format(formatter);
+            fileName = fileName.replaceAll("\\.txt$", "");
             outputFileName = "output_" + timestamp + "_" + fileName + ".txt";
         }
         String fullOutputPath = outputPath + outputFileName;
