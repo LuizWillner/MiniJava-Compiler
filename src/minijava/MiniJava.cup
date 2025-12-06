@@ -1,13 +1,9 @@
 package minijava;
-
 import java_cup.runtime.*;
 import minijava.ASTNode;
 
-/* =================================================
-  Configurações e Código Auxiliar
-================================================= */
-
 parser code {:
+    private boolean syntaxErrors = false;
     public void report_error(String message, Object info) {
         StringBuilder m = new StringBuilder("Erro de Sintaxe");
         if (info instanceof java_cup.runtime.Symbol) {
@@ -20,319 +16,466 @@ parser code {:
         }
         m.append(" : "+message);
         System.err.println(m);
+        this.syntaxErrors = true;
     }
 
     public void report_fatal_error(String message, Object info) {
         report_error(message, info);
     }
+
+    public boolean hasErrors() {
+        return this.syntaxErrors;
+    }
 :};
 
-/* =================================================
-  Terminais
-================================================= */
-
-terminal CLASS, PUBLIC, STATIC, VOID, MAIN, EXTENDS, RETURN, INT, BOOLEAN, STRING_TYPE;
-terminal IF, ELSE, WHILE, TRUE, FALSE, THIS, NEW, LENGTH, PRINT;
-
-terminal String ID, NUMBER;
-
-terminal ERROR;
-terminal AND, LESSTHAN, PLUS, MINUS, MULT, NOT, ASSIGN;
-terminal SEMICOL, COMMA, DOT;
+/* Terminais */
+terminal CLASS, PUBLIC, STATIC, VOID, MAIN, EXTENDS, RETURN;
+terminal INT, BOOLEAN, STRING_TYPE;
+terminal IF, ELSE, WHILE;
+terminal TRUE, FALSE, THIS, NEW, LENGTH, PRINT;
+terminal AND, LESSTHAN, PLUS, MINUS, MULT, NOT;
+terminal ASSIGN, SEMICOL, COMMA, DOT;
 terminal LBRACK, RBRACK, LPAREN, RPAREN, LBRACE, RBRACE;
+terminal String ID, NUMBER;
+terminal ERROR;
 
-/* =================================================
-  Não-Terminais (todos retornam ASTNode!)
-================================================= */
+/* Não-terminais */
+/* Não-terminais */
+non terminal ASTNode Goal, MainClass, ClassDeclaration;
+non terminal ASTNode VarDeclaration, MethodDeclaration;
+non terminal ASTNode Type, Statement, Expression;
+non terminal ASTNode ClassDeclarationList, VarDeclarationList, MethodDeclarationList;
+non terminal ASTNode StatementList, ExpressionList, ParameterList, Parameter;
 
-non terminal ASTNode Goal, MainClass, ClassDeclaration, VarDeclaration, MethodDeclaration, Type, Statement, Expression;
-non terminal ASTNode ClassDeclarationList, VarDeclarationList, MethodDeclarationList, OptFormalList, FormalList;
-non terminal ASTNode StatementList, OptExpressionList, ExpressionList;
-
-/* =================================================
-  Precedência
-================================================= */
-
+/* Precedência */
 precedence left AND;
 precedence left LESSTHAN;
 precedence left PLUS, MINUS;
 precedence left MULT;
 precedence right NOT;
+precedence left DOT, LBRACK;
 
-/* =================================================
-  Regras da Gramática
-================================================= */
+/* Gramática */
+start with Goal;
 
-Goal ::= MainClass:m ClassDeclarationList:cds
-        {:
-            ASTNode root = new ASTNode("Goal");
-            root.addChild(m);
-            root.addChild(cds);
-            RESULT = root;
-        :}
-        ;
+Goal ::=
+    MainClass:mc ClassDeclarationList:cdl
+    {:
+        ASTNode goal = new ASTNode("Goal");
+        goal.addChild(mc);
+        if (cdl != null) goal.addChild(cdl);
+        RESULT = goal;
+    :}
+    | MainClass:mc
+    {:
+        ASTNode goal = new ASTNode("Goal");
+        goal.addChild(mc);
+        RESULT = goal;
+    :}
+    ;
 
-ClassDeclarationList ::= ClassDeclaration:c ClassDeclarationList:cds
-        {:
-            ASTNode n = new ASTNode("ClassDeclList");
-            n.addChild(c);
-            n.addChild(cds);
-            RESULT = n;
-        :}
-        | /* empty */ {: RESULT = new ASTNode("EmptyClassDeclList"); :}
-        ;
+ClassDeclarationList ::=
+    ClassDeclaration:cd
+    {:
+        ASTNode list = new ASTNode("ClassDeclarationList");
+        list.addChild(cd);
+        RESULT = list;
+    :}
+    | ClassDeclarationList:cdl ClassDeclaration:cd
+    {:
+        cdl.addChild(cd);
+        RESULT = cdl;
+    :}
+    ;
 
-MainClass ::= CLASS ID:id LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING_TYPE LBRACK RBRACK ID:arg RPAREN
-              LBRACE Statement:st RBRACE RBRACE
-        {:
-            ASTNode n = new ASTNode("MainClass");
-            n.addChild(new ASTNode("ClassName", id));
-            n.addChild(new ASTNode("ArgName", arg));
-            n.addChild(st);
-            RESULT = n;
-        :}
-        ;
+MainClass ::=
+    CLASS ID:name LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING_TYPE LBRACK RBRACK ID:args RPAREN LBRACE Statement:stmt RBRACE RBRACE
+    {:
+        ASTNode mainClass = new ASTNode("MainClass", name);
+        ASTNode argsNode = new ASTNode("Args", args);
+        mainClass.addChild(argsNode);
+        mainClass.addChild(stmt);
+        RESULT = mainClass;
+    :}
+    ;
 
-ClassDeclaration ::= CLASS ID:id LBRACE VarDeclarationList:vars MethodDeclarationList:methods RBRACE
-        {:
-            ASTNode n = new ASTNode("ClassDeclaration");
-            n.addChild(new ASTNode("ClassName", id));
-            n.addChild(vars);
-            n.addChild(methods);
-            RESULT = n;
-        :}
-        | CLASS ID:id EXTENDS ID:parent LBRACE VarDeclarationList:vars MethodDeclarationList:methods RBRACE
-        {:
-            ASTNode n = new ASTNode("ClassExtends");
-            n.addChild(new ASTNode("ClassName", id));
-            n.addChild(new ASTNode("Extends", parent));
-            n.addChild(vars);
-            n.addChild(methods);
-            RESULT = n;
-        :}
-        ;
+ClassDeclaration ::=
+    CLASS ID:name LBRACE VarDeclarationList:vdl MethodDeclarationList:mdl RBRACE
+    {:
+        ASTNode classDecl = new ASTNode("ClassDeclaration", name);
+        if (vdl != null) classDecl.addChild(vdl);
+        if (mdl != null) classDecl.addChild(mdl);
+        RESULT = classDecl;
+    :}
+    | CLASS ID:name LBRACE VarDeclarationList:vdl RBRACE
+    {:
+        ASTNode classDecl = new ASTNode("ClassDeclaration", name);
+        if (vdl != null) classDecl.addChild(vdl);
+        RESULT = classDecl;
+    :}
+    | CLASS ID:name LBRACE MethodDeclarationList:mdl RBRACE
+    {:
+        ASTNode classDecl = new ASTNode("ClassDeclaration", name);
+        if (mdl != null) classDecl.addChild(mdl);
+        RESULT = classDecl;
+    :}
+    | CLASS ID:name LBRACE RBRACE
+    {:
+        RESULT = new ASTNode("ClassDeclaration", name);
+    :}
+    | CLASS ID:name EXTENDS ID:parent LBRACE VarDeclarationList:vdl MethodDeclarationList:mdl RBRACE
+    {:
+        ASTNode classDecl = new ASTNode("ClassDeclaration", name);
+        ASTNode extendsNode = new ASTNode("Extends", parent);
+        classDecl.addChild(extendsNode);
+        if (vdl != null) classDecl.addChild(vdl);
+        if (mdl != null) classDecl.addChild(mdl);
+        RESULT = classDecl;
+    :}
+    | CLASS ID:name EXTENDS ID:parent LBRACE VarDeclarationList:vdl RBRACE
+    {:
+        ASTNode classDecl = new ASTNode("ClassDeclaration", name);
+        ASTNode extendsNode = new ASTNode("Extends", parent);
+        classDecl.addChild(extendsNode);
+        if (vdl != null) classDecl.addChild(vdl);
+        RESULT = classDecl;
+    :}
+    | CLASS ID:name EXTENDS ID:parent LBRACE MethodDeclarationList:mdl RBRACE
+    {:
+        ASTNode classDecl = new ASTNode("ClassDeclaration", name);
+        ASTNode extendsNode = new ASTNode("Extends", parent);
+        classDecl.addChild(extendsNode);
+        if (mdl != null) classDecl.addChild(mdl);
+        RESULT = classDecl;
+    :}
+    | CLASS ID:name EXTENDS ID:parent LBRACE RBRACE
+    {:
+        ASTNode classDecl = new ASTNode("ClassDeclaration", name);
+        ASTNode extendsNode = new ASTNode("Extends", parent);
+        classDecl.addChild(extendsNode);
+        RESULT = classDecl;
+    :}
+    ;
 
-VarDeclarationList ::= VarDeclaration:v VarDeclarationList:vl
-        {:
-            ASTNode n = new ASTNode("VarDeclList");
-            n.addChild(v);
-            n.addChild(vl);
-            RESULT = n;
-        :}
-        | /* empty */ {: RESULT = new ASTNode("EmptyVarList"); :}
-        ;
+VarDeclarationList ::=
+    VarDeclaration:vd
+    {:
+        ASTNode list = new ASTNode("VarDeclarationList");
+        list.addChild(vd);
+        RESULT = list;
+    :}
+    | VarDeclarationList:vdl VarDeclaration:vd
+    {:
+        vdl.addChild(vd);
+        RESULT = vdl;
+    :}
+    ;
 
-VarDeclaration ::= Type:t ID:id SEMICOL
-        {:
-            ASTNode n = new ASTNode("VarDecl");
-            n.addChild(t);
-            n.addChild(new ASTNode("VarName", id));
-            RESULT = n;
-        :}
-        ;
+VarDeclaration ::=
+    Type:t ID:name SEMICOL
+    {:
+        ASTNode varDecl = new ASTNode("VarDeclaration", name);
+        varDecl.addChild(t);
+        RESULT = varDecl;
+    :}
+    ;
 
-MethodDeclarationList ::= MethodDeclaration:m MethodDeclarationList:ml
-        {:
-            ASTNode n = new ASTNode("MethodDeclList");
-            n.addChild(m);
-            n.addChild(ml);
-            RESULT = n;
-        :}
-        | /* empty */ {: RESULT = new ASTNode("EmptyMethodList"); :}
-        ;
+MethodDeclarationList ::=
+    MethodDeclaration:md
+    {:
+        ASTNode list = new ASTNode("MethodDeclarationList");
+        list.addChild(md);
+        RESULT = list;
+    :}
+    | MethodDeclarationList:mdl MethodDeclaration:md
+    {:
+        mdl.addChild(md);
+        RESULT = mdl;
+    :}
+    ;
 
-MethodDeclaration ::= PUBLIC Type:t ID:name LPAREN OptFormalList:params RPAREN
-                      LBRACE VarDeclarationList:vars StatementList:sts RETURN Expression:expr SEMICOL RBRACE
-        {:
-            ASTNode n = new ASTNode("MethodDeclaration");
-            n.addChild(t);
-            n.addChild(new ASTNode("MethodName", name));
-            n.addChild(params);
-            n.addChild(vars);
-            n.addChild(sts);
-            n.addChild(new ASTNode("Return", expr));
-            RESULT = n;
-        :}
-        ;
+MethodDeclaration ::=
+    PUBLIC Type:t ID:name LPAREN ParameterList:pl RPAREN LBRACE VarDeclarationList:vdl StatementList:sl RETURN Expression:e SEMICOL RBRACE
+    {:
+        ASTNode method = new ASTNode("MethodDeclaration", name);
+        method.addChild(t);
+        if (pl != null) method.addChild(pl);
+        if (vdl != null) method.addChild(vdl);
+        if (sl != null) method.addChild(sl);
+        ASTNode returnNode = new ASTNode("Return");
+        returnNode.addChild(e);
+        method.addChild(returnNode);
+        RESULT = method;
+    :}
+    | PUBLIC Type:t ID:name LPAREN RPAREN LBRACE VarDeclarationList:vdl StatementList:sl RETURN Expression:e SEMICOL RBRACE
+    {:
+        ASTNode method = new ASTNode("MethodDeclaration", name);
+        method.addChild(t);
+        if (vdl != null) method.addChild(vdl);
+        if (sl != null) method.addChild(sl);
+        ASTNode returnNode = new ASTNode("Return");
+        returnNode.addChild(e);
+        method.addChild(returnNode);
+        RESULT = method;
+    :}
+    | PUBLIC Type:t ID:name LPAREN ParameterList:pl RPAREN LBRACE StatementList:sl RETURN Expression:e SEMICOL RBRACE
+    {:
+        ASTNode method = new ASTNode("MethodDeclaration", name);
+        method.addChild(t);
+        if (pl != null) method.addChild(pl);
+        if (sl != null) method.addChild(sl);
+        ASTNode returnNode = new ASTNode("Return");
+        returnNode.addChild(e);
+        method.addChild(returnNode);
+        RESULT = method;
+    :}
+    | PUBLIC Type:t ID:name LPAREN RPAREN LBRACE StatementList:sl RETURN Expression:e SEMICOL RBRACE
+    {:
+        ASTNode method = new ASTNode("MethodDeclaration", name);
+        method.addChild(t);
+        if (sl != null) method.addChild(sl);
+        ASTNode returnNode = new ASTNode("Return");
+        returnNode.addChild(e);
+        method.addChild(returnNode);
+        RESULT = method;
+    :}
+    | PUBLIC Type:t ID:name LPAREN ParameterList:pl RPAREN LBRACE VarDeclarationList:vdl RETURN Expression:e SEMICOL RBRACE
+    {:
+        ASTNode method = new ASTNode("MethodDeclaration", name);
+        method.addChild(t);
+        if (pl != null) method.addChild(pl);
+        if (vdl != null) method.addChild(vdl);
+        ASTNode returnNode = new ASTNode("Return");
+        returnNode.addChild(e);
+        method.addChild(returnNode);
+        RESULT = method;
+    :}
+    | PUBLIC Type:t ID:name LPAREN RPAREN LBRACE VarDeclarationList:vdl RETURN Expression:e SEMICOL RBRACE
+    {:
+        ASTNode method = new ASTNode("MethodDeclaration", name);
+        method.addChild(t);
+        if (vdl != null) method.addChild(vdl);
+        ASTNode returnNode = new ASTNode("Return");
+        returnNode.addChild(e);
+        method.addChild(returnNode);
+        RESULT = method;
+    :}
+    | PUBLIC Type:t ID:name LPAREN ParameterList:pl RPAREN LBRACE RETURN Expression:e SEMICOL RBRACE
+    {:
+        ASTNode method = new ASTNode("MethodDeclaration", name);
+        method.addChild(t);
+        if (pl != null) method.addChild(pl);
+        ASTNode returnNode = new ASTNode("Return");
+        returnNode.addChild(e);
+        method.addChild(returnNode);
+        RESULT = method;
+    :}
+    | PUBLIC Type:t ID:name LPAREN RPAREN LBRACE RETURN Expression:e SEMICOL RBRACE
+    {:
+        ASTNode method = new ASTNode("MethodDeclaration", name);
+        method.addChild(t);
+        ASTNode returnNode = new ASTNode("Return");
+        returnNode.addChild(e);
+        method.addChild(returnNode);
+        RESULT = method;
+    :}
+    ;
 
-OptFormalList ::= FormalList:fl
-        {: RESULT = fl; :}
-        | /* empty */ {: RESULT = new ASTNode("EmptyParams"); :}
-        ;
+ParameterList ::=
+    Parameter:p
+    {:
+        ASTNode list = new ASTNode("ParameterList");
+        list.addChild(p);
+        RESULT = list;
+    :}
+    | ParameterList:pl COMMA Parameter:p
+    {:
+        pl.addChild(p);
+        RESULT = pl;
+    :}
+    ;
 
-FormalList ::= Type:t ID:id
-        {:
-            ASTNode n = new ASTNode("Formal");
-            n.addChild(t);
-            n.addChild(new ASTNode("ParamName", id));
-            RESULT = n;
-        :}
-        | FormalList:fl COMMA Type:t ID:id
-        {:
-            ASTNode n = new ASTNode("ParamList");
-            n.addChild(fl);
-            ASTNode p = new ASTNode("Formal");
-            p.addChild(t);
-            p.addChild(new ASTNode("ParamName", id));
-            n.addChild(p);
-            RESULT = n;
-        :}
-        ;
+Parameter ::=
+    Type:t ID:name
+    {:
+        ASTNode param = new ASTNode("Parameter", name);
+        param.addChild(t);
+        RESULT = param;
+    :}
+    ;
 
-Type ::= INT LBRACK RBRACK {: RESULT = new ASTNode("Type", "int[]"); :}
-       | BOOLEAN {: RESULT = new ASTNode("Type", "boolean"); :}
-       | INT {: RESULT = new ASTNode("Type", "int"); :}
-       | ID:id {: RESULT = new ASTNode("Type", id); :}
-       ;
+Type ::=
+    INT LBRACK RBRACK
+    {: RESULT = new ASTNode("Type", "int[]"); :}
+    | BOOLEAN
+    {: RESULT = new ASTNode("Type", "boolean"); :}
+    | INT
+    {: RESULT = new ASTNode("Type", "int"); :}
+    | ID:name
+    {: RESULT = new ASTNode("Type", name); :}
+    ;
 
-StatementList ::= Statement:s StatementList:sl
-        {:
-            ASTNode n = new ASTNode("StmtList");
-            n.addChild(s);
-            n.addChild(sl);
-            RESULT = n;
-        :}
-        | /* empty */ {: RESULT = new ASTNode("EmptyStmtList"); :}
-        ;
+StatementList ::=
+    Statement:s
+    {:
+        ASTNode list = new ASTNode("StatementList");
+        list.addChild(s);
+        RESULT = list;
+    :}
+    | StatementList:sl Statement:s
+    {:
+        sl.addChild(s);
+        RESULT = sl;
+    :}
+    ;
 
-Statement ::= LBRACE StatementList:sl RBRACE
-        {:
-            ASTNode n = new ASTNode("Block");
-            n.addChild(sl);
-            RESULT = n;
-        :}
-        | IF LPAREN Expression:e RPAREN Statement:s1 ELSE Statement:s2
-        {:
-            ASTNode n = new ASTNode("If");
-            n.addChild(e);
-            n.addChild(s1);
-            n.addChild(s2);
-            RESULT = n;
-        :}
-        | WHILE LPAREN Expression:e RPAREN Statement:s
-        {:
-            ASTNode n = new ASTNode("While");
-            n.addChild(e);
-            n.addChild(s);
-            RESULT = n;
-        :}
-        | PRINT LPAREN Expression:e RPAREN SEMICOL
-        {:
-            ASTNode n = new ASTNode("Print");
-            n.addChild(e);
-            RESULT = n;
-        :}
-        | ID:id ASSIGN Expression:e SEMICOL
-        {:
-            ASTNode n = new ASTNode("Assign");
-            n.addChild(new ASTNode("Var", id));
-            n.addChild(e);
-            RESULT = n;
-        :}
-        | ID:id LBRACK Expression:e1 RBRACK ASSIGN Expression:e2 SEMICOL
-        {:
-            ASTNode n = new ASTNode("ArrayAssign");
-            n.addChild(new ASTNode("Var", id));
-            n.addChild(e1);
-            n.addChild(e2);
-            RESULT = n;
-        :}
-        ;
+Statement ::=
+    LBRACE StatementList:sl RBRACE
+    {:
+        ASTNode block = new ASTNode("Block");
+        if (sl != null) block.addChild(sl);
+        RESULT = block;
+    :}
+    | LBRACE RBRACE
+    {: RESULT = new ASTNode("Block"); :}
+    | IF LPAREN Expression:e RPAREN Statement:s1 ELSE Statement:s2
+    {:
+        ASTNode ifStmt = new ASTNode("If");
+        ifStmt.addChild(e);
+        ifStmt.addChild(s1);
+        ASTNode elseStmt = new ASTNode("Else");
+        elseStmt.addChild(s2);
+        ifStmt.addChild(elseStmt);
+        RESULT = ifStmt;
+    :}
+    | WHILE LPAREN Expression:e RPAREN Statement:s
+    {:
+        ASTNode whileStmt = new ASTNode("While");
+        whileStmt.addChild(e);
+        whileStmt.addChild(s);
+        RESULT = whileStmt;
+    :}
+    | PRINT LPAREN Expression:e RPAREN SEMICOL
+    {:
+        ASTNode printStmt = new ASTNode("Print");
+        printStmt.addChild(e);
+        RESULT = printStmt;
+    :}
+    | ID:name ASSIGN Expression:e SEMICOL
+    {:
+        ASTNode assign = new ASTNode("Assign", name);
+        assign.addChild(e);
+        RESULT = assign;
+    :}
+    | ID:name LBRACK Expression:e1 RBRACK ASSIGN Expression:e2 SEMICOL
+    {:
+        ASTNode arrayAssign = new ASTNode("ArrayAssign", name);
+        arrayAssign.addChild(e1);
+        arrayAssign.addChild(e2);
+        RESULT = arrayAssign;
+    :}
+    ;
 
-Expression ::= Expression:e1 AND Expression:e2
-        {:
-            ASTNode n = new ASTNode("And");
-            n.addChild(e1);
-            n.addChild(e2);
-            RESULT = n;
-        :}
-        | Expression:e1 LESSTHAN Expression:e2
-        {:
-            ASTNode n = new ASTNode("LessThan");
-            n.addChild(e1);
-            n.addChild(e2);
-            RESULT = n;
-        :}
-        | Expression:e1 PLUS Expression:e2
-        {:
-            ASTNode n = new ASTNode("Plus");
-            n.addChild(e1);
-            n.addChild(e2);
-            RESULT = n;
-        :}
-        | Expression:e1 MINUS Expression:e2
-        {:
-            ASTNode n = new ASTNode("Minus");
-            n.addChild(e1);
-            n.addChild(e2);
-            RESULT = n;
-        :}
-        | Expression:e1 MULT Expression:e2
-        {:
-            ASTNode n = new ASTNode("Mult");
-            n.addChild(e1);
-            n.addChild(e2);
-            RESULT = n;
-        :}
-        | Expression:e1 LBRACK Expression:e2 RBRACK
-        {:
-            ASTNode n = new ASTNode("ArrayAccess");
-            n.addChild(e1);
-            n.addChild(e2);
-            RESULT = n;
-        :}
-        | Expression:e DOT LENGTH
-        {:
-            ASTNode n = new ASTNode("Length");
-            n.addChild(e);
-            RESULT = n;
-        :}
-        | Expression:e DOT ID:id LPAREN OptExpressionList:args RPAREN
-        {:
-            ASTNode n = new ASTNode("MethodCall");
-            n.addChild(e);
-            n.addChild(new ASTNode("MethodName", id));
-            n.addChild(args);
-            RESULT = n;
-        :}
-        | NUMBER:num {: RESULT = new ASTNode("Number", num); :}
-        | TRUE {: RESULT = new ASTNode("Bool", "true"); :}
-        | FALSE {: RESULT = new ASTNode("Bool", "false"); :}
-        | ID:id {: RESULT = new ASTNode("Id", id); :}
-        | THIS {: RESULT = new ASTNode("This"); :}
-        | NEW INT LBRACK Expression:e RBRACK
-        {:
-            ASTNode n = new ASTNode("NewIntArray");
-            n.addChild(e);
-            RESULT = n;
-        :}
-        | NEW ID:id LPAREN RPAREN
-        {:
-            ASTNode n = new ASTNode("NewObj");
-            n.addChild(new ASTNode("Class", id));
-            RESULT = n;
-        :}
-        | NOT Expression:e
-        {:
-            ASTNode n = new ASTNode("Not");
-            n.addChild(e);
-            RESULT = n;
-        :}
-        | LPAREN Expression:e RPAREN {: RESULT = e; :}
-        ;
+Expression ::=
+    Expression:e1 AND Expression:e2
+    {:
+        ASTNode and = new ASTNode("And");
+        and.addChild(e1);
+        and.addChild(e2);
+        RESULT = and;
+    :}
+    | Expression:e1 LESSTHAN Expression:e2
+    {:
+        ASTNode lessThan = new ASTNode("LessThan");
+        lessThan.addChild(e1);
+        lessThan.addChild(e2);
+        RESULT = lessThan;
+    :}
+    | Expression:e1 PLUS Expression:e2
+    {:
+        ASTNode plus = new ASTNode("Plus");
+        plus.addChild(e1);
+        plus.addChild(e2);
+        RESULT = plus;
+    :}
+    | Expression:e1 MINUS Expression:e2
+    {:
+        ASTNode minus = new ASTNode("Minus");
+        minus.addChild(e1);
+        minus.addChild(e2);
+        RESULT = minus;
+    :}
+    | Expression:e1 MULT Expression:e2
+    {:
+        ASTNode mult = new ASTNode("Mult");
+        mult.addChild(e1);
+        mult.addChild(e2);
+        RESULT = mult;
+    :}
+    | Expression:e1 LBRACK Expression:e2 RBRACK
+    {:
+        ASTNode arrayAccess = new ASTNode("ArrayAccess");
+        arrayAccess.addChild(e1);
+        arrayAccess.addChild(e2);
+        RESULT = arrayAccess;
+    :}
+    | Expression:e DOT LENGTH
+    {:
+        ASTNode length = new ASTNode("Length");
+        length.addChild(e);
+        RESULT = length;
+    :}
+    | Expression:e DOT ID:method LPAREN ExpressionList:el RPAREN
+    {:
+        ASTNode call = new ASTNode("MethodCall", method);
+        call.addChild(e);
+        if (el != null) call.addChild(el);
+        RESULT = call;
+    :}
+    | Expression:e DOT ID:method LPAREN RPAREN
+    {:
+        ASTNode call = new ASTNode("MethodCall", method);
+        call.addChild(e);
+        RESULT = call;
+    :}
+    | NUMBER:n
+    {: RESULT = new ASTNode("Number", n); :}
+    | TRUE
+    {: RESULT = new ASTNode("Boolean", "true"); :}
+    | FALSE
+    {: RESULT = new ASTNode("Boolean", "false"); :}
+    | ID:name
+    {: RESULT = new ASTNode("Identifier", name); :}
+    | THIS
+    {: RESULT = new ASTNode("This"); :}
+    | NEW INT LBRACK Expression:e RBRACK
+    {:
+        ASTNode newArray = new ASTNode("NewArray");
+        newArray.addChild(e);
+        RESULT = newArray;
+    :}
+    | NEW ID:name LPAREN RPAREN
+    {: RESULT = new ASTNode("NewObject", name); :}
+    | NOT Expression:e
+    {:
+        ASTNode not = new ASTNode("Not");
+        not.addChild(e);
+        RESULT = not;
+    :}
+    | LPAREN Expression:e RPAREN
+    {: RESULT = e; :}
+    ;
 
-OptExpressionList ::= ExpressionList:el {: RESULT = el; :}
-                    | /* empty */ {: RESULT = new ASTNode("EmptyArgs"); :}
-                    ;
-
-ExpressionList ::= Expression:e {:
-            ASTNode n = new ASTNode("ExprList");
-            n.addChild(e);
-            RESULT = n;
-        :}
-        | ExpressionList:el COMMA Expression:e
-        {:
-            el.addChild(e);
-            RESULT = el;
-        :}
-        ;
+ExpressionList ::=
+    Expression:e
+    {:
+        ASTNode list = new ASTNode("ExpressionList");
+        list.addChild(e);
+        RESULT = list;
+    :}
+    | ExpressionList:el COMMA Expression:e
+    {:
+        el.addChild(e);
+        RESULT = el;
+    :}
+    ;
