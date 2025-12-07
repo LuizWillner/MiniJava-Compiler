@@ -72,4 +72,8 @@ Token: RBRACE Valor: }
 Scanner OK — nenhum erro léxico encontrado!
 
 --- Iniciando Análise Sintática ---
+Erro de Sintaxe na linha 10, coluna 9 : Syntax error
 instead expected token classes are []
+Erro de Sintaxe na linha 10, coluna 9 : Couldn't repair and continue parse
+
+Falha na analise sintatica. A AST nao pode ser gerada devido a erros.

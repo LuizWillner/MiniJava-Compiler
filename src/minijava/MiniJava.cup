@@ -15,7 +15,7 @@ parser code {:
             }
         }
         m.append(" : "+message);
-        System.err.println(m);
+        System.out.println(m);
         this.syntaxErrors = true;
     }
 

@@ -382,7 +382,7 @@ public class Parser extends java_cup.runtime.lr_parser {
             }
         }
         m.append(" : "+message);
-        System.err.println(m);
+        System.out.println(m);
         this.syntaxErrors = true;
     }
 

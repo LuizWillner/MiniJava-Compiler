@@ -89,7 +89,7 @@ public class Main {
             }
         } catch (Exception e) {
             System.setOut(originalOut);
-            System.err.println("Erro ao processar: " + e.getMessage());
+            System.out.println("Erro ao processar: " + e.getMessage());
         } finally {
             System.setOut(originalOut);
             System.out.println("Processamento concluído. Saída salva em: " + fullOutputPath);
@@ -188,11 +188,11 @@ public class Main {
             } else {
                 // Se hasErrors() for true, significa que um erro sintático ocorreu.
                 // A mensagem de erro já foi impressa pelo método report_error do parser.
-                System.err.println("\nFalha na analise sintatica. A AST nao pode ser gerada devido a erros.");
+                System.out.println("\nFalha na analise sintatica. A AST nao pode ser gerada devido a erros.");
             }
 
         } catch (Exception e) {
-            System.err.println("\nErro irrecuperável durante a análise sintática: " + e.getMessage());
+            System.out.println("\nErro irrecuperável durante a análise sintática: " + e.getMessage());
         }
     }
 
