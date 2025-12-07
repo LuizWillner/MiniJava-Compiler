@@ -1,4 +1,4 @@
-// Teste de erro com type não existente: ínt
+// Teste de erro com typo escrevendo ínt com acento não existente
 class TesteString {
     public static void main(String[] args) {
         System.out.println(new Exemplo().dois());
