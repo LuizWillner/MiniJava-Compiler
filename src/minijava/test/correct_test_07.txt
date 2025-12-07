@@ -1,0 +1,18 @@
+class Condicional {
+    public static void main(String[] args) {
+        System.out.println(new Teste().verificar());
+    }
+}
+
+class Teste {
+    public int verificar() {
+        int x;
+        x = 10;
+        if (x < 20) {
+            x = 1;
+        } else {
+            x = 0;
+        }
+        return x;
+    }
+}
