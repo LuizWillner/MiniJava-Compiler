@@ -1,0 +1,200 @@
+--- Executando Parser do MiniJava ---
+--- Verificando Scanner (MiniJava) ---
+Token: CLASS Valor: class
+Token: ID Valor: TesteArray
+Token: LBRACE Valor: {
+Token: PUBLIC Valor: public
+Token: STATIC Valor: static
+Token: VOID Valor: void
+Token: MAIN Valor: main
+Token: LPAREN Valor: (
+Token: STRING_TYPE Valor: String
+Token: LBRACK Valor: [
+Token: RBRACK Valor: ]
+Token: ID Valor: args
+Token: RPAREN Valor: )
+Token: LBRACE Valor: {
+Token: PRINT Valor: System.out.println
+Token: LPAREN Valor: (
+Token: NEW Valor: new
+Token: ID Valor: ArrayOps
+Token: LPAREN Valor: (
+Token: RPAREN Valor: )
+Token: DOT Valor: .
+Token: ID Valor: somaElementos
+Token: LPAREN Valor: (
+Token: RPAREN Valor: )
+Token: RPAREN Valor: )
+Token: SEMICOL Valor: ;
+Token: RBRACE Valor: }
+Token: RBRACE Valor: }
+Token: CLASS Valor: class
+Token: ID Valor: ArrayOps
+Token: LBRACE Valor: {
+Token: PUBLIC Valor: public
+Token: INT Valor: int
+Token: ID Valor: somaElementos
+Token: LPAREN Valor: (
+Token: RPAREN Valor: )
+Token: LBRACE Valor: {
+Token: INT Valor: int
+Token: LBRACK Valor: [
+Token: RBRACK Valor: ]
+Token: ID Valor: numeros
+Token: SEMICOL Valor: ;
+Token: INT Valor: int
+Token: ID Valor: soma
+Token: SEMICOL Valor: ;
+Token: INT Valor: int
+Token: ID Valor: i
+Token: SEMICOL Valor: ;
+Token: ID Valor: numeros
+Token: ASSIGN Valor: =
+Token: NEW Valor: new
+Token: INT Valor: int
+Token: LBRACK Valor: [
+Token: NUMBER Valor: 5
+Token: RBRACK Valor: ]
+Token: SEMICOL Valor: ;
+Token: ID Valor: numeros
+Token: LBRACK Valor: [
+Token: NUMBER Valor: 0
+Token: RBRACK Valor: ]
+Token: ASSIGN Valor: =
+Token: NUMBER Valor: 10
+Token: SEMICOL Valor: ;
+Token: ID Valor: numeros
+Token: LBRACK Valor: [
+Token: NUMBER Valor: 1
+Token: RBRACK Valor: ]
+Token: ASSIGN Valor: =
+Token: NUMBER Valor: 20
+Token: SEMICOL Valor: ;
+Token: ID Valor: numeros
+Token: LBRACK Valor: [
+Token: NUMBER Valor: 2
+Token: RBRACK Valor: ]
+Token: ASSIGN Valor: =
+Token: NUMBER Valor: 30
+Token: SEMICOL Valor: ;
+Token: ID Valor: numeros
+Token: LBRACK Valor: [
+Token: NUMBER Valor: 3
+Token: RBRACK Valor: ]
+Token: ASSIGN Valor: =
+Token: NUMBER Valor: 40
+Token: SEMICOL Valor: ;
+Token: ID Valor: numeros
+Token: LBRACK Valor: [
+Token: NUMBER Valor: 4
+Token: RBRACK Valor: ]
+Token: ASSIGN Valor: =
+Token: NUMBER Valor: 50
+Token: SEMICOL Valor: ;
+Token: ID Valor: soma
+Token: ASSIGN Valor: =
+Token: NUMBER Valor: 0
+Token: SEMICOL Valor: ;
+Token: ID Valor: i
+Token: ASSIGN Valor: =
+Token: NUMBER Valor: 0
+Token: SEMICOL Valor: ;
+Token: WHILE Valor: while
+Token: LPAREN Valor: (
+Token: ID Valor: i
+Token: LESSTHAN Valor: <
+Token: ID Valor: numeros
+Token: DOT Valor: .
+Token: LENGTH Valor: length
+Token: RPAREN Valor: )
+Token: LBRACE Valor: {
+Token: ID Valor: soma
+Token: ASSIGN Valor: =
+Token: ID Valor: soma
+Token: PLUS Valor: +
+Token: ID Valor: numeros
+Token: LBRACK Valor: [
+Token: ID Valor: i
+Token: RBRACK Valor: ]
+Token: SEMICOL Valor: ;
+Token: ID Valor: i
+Token: ASSIGN Valor: =
+Token: ID Valor: i
+Token: PLUS Valor: +
+Token: NUMBER Valor: 1
+Token: SEMICOL Valor: ;
+Token: RBRACE Valor: }
+Token: RETURN Valor: return
+Token: ID Valor: soma
+Token: SEMICOL Valor: ;
+Token: RBRACE Valor: }
+Token: RBRACE Valor: }
+--- Fim da verificação léxica ---
+
+Scanner OK — nenhum erro léxico encontrado!
+
+--- Iniciando Análise Sintática ---
+
+Analise sintatica concluida com sucesso!
+
+--- Árvore Sintática (AST) ---
+Goal
+  MainClass: TesteArray
+    Args: args
+    Print
+      MethodCall: somaElementos
+        NewObject: ArrayOps
+  ClassDeclarationList
+    ClassDeclaration: ArrayOps
+      MethodDeclarationList
+        MethodDeclaration: somaElementos
+          Type: int
+          VarDeclarationList
+            VarDeclaration: numeros
+              Type: int[]
+            VarDeclaration: soma
+              Type: int
+            VarDeclaration: i
+              Type: int
+          StatementList
+            Assign: numeros
+              NewArray
+                Number: 5
+            ArrayAssign: numeros
+              Number: 0
+              Number: 10
+            ArrayAssign: numeros
+              Number: 1
+              Number: 20
+            ArrayAssign: numeros
+              Number: 2
+              Number: 30
+            ArrayAssign: numeros
+              Number: 3
+              Number: 40
+            ArrayAssign: numeros
+              Number: 4
+              Number: 50
+            Assign: soma
+              Number: 0
+            Assign: i
+              Number: 0
+            While
+              LessThan
+                Identifier: i
+                Length
+                  Identifier: numeros
+              Block
+                StatementList
+                  Assign: soma
+                    Plus
+                      Identifier: soma
+                      ArrayAccess
+                        Identifier: numeros
+                        Identifier: i
+                  Assign: i
+                    Plus
+                      Identifier: i
+                      Number: 1
+          Return
+            Identifier: soma

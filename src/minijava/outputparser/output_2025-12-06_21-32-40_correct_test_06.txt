@@ -1,0 +1,66 @@
+--- Executando Parser do MiniJava ---
+--- Verificando Scanner (MiniJava) ---
+Token: CLASS Valor: class
+Token: ID Valor: HelloWorld
+Token: LBRACE Valor: {
+Token: PUBLIC Valor: public
+Token: STATIC Valor: static
+Token: VOID Valor: void
+Token: MAIN Valor: main
+Token: LPAREN Valor: (
+Token: STRING_TYPE Valor: String
+Token: LBRACK Valor: [
+Token: RBRACK Valor: ]
+Token: ID Valor: args
+Token: RPAREN Valor: )
+Token: LBRACE Valor: {
+Token: PRINT Valor: System.out.println
+Token: LPAREN Valor: (
+Token: NEW Valor: new
+Token: ID Valor: Display
+Token: LPAREN Valor: (
+Token: RPAREN Valor: )
+Token: DOT Valor: .
+Token: ID Valor: showNumber
+Token: LPAREN Valor: (
+Token: RPAREN Valor: )
+Token: RPAREN Valor: )
+Token: SEMICOL Valor: ;
+Token: RBRACE Valor: }
+Token: RBRACE Valor: }
+Token: CLASS Valor: class
+Token: ID Valor: Display
+Token: LBRACE Valor: {
+Token: PUBLIC Valor: public
+Token: INT Valor: int
+Token: ID Valor: showNumber
+Token: LPAREN Valor: (
+Token: RPAREN Valor: )
+Token: LBRACE Valor: {
+Token: RETURN Valor: return
+Token: NUMBER Valor: 42
+Token: SEMICOL Valor: ;
+Token: RBRACE Valor: }
+Token: RBRACE Valor: }
+--- Fim da verificação léxica ---
+
+Scanner OK — nenhum erro léxico encontrado!
+
+--- Iniciando Análise Sintática ---
+
+Analise sintatica concluida com sucesso!
+
+--- Árvore Sintática (AST) ---
+Goal
+  MainClass: HelloWorld
+    Args: args
+    Print
+      MethodCall: showNumber
+        NewObject: Display
+  ClassDeclarationList
+    ClassDeclaration: Display
+      MethodDeclarationList
+        MethodDeclaration: showNumber
+          Type: int
+          Return
+            Number: 42
