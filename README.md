@@ -51,6 +51,15 @@ make run
 
 ### macOS/Linux
 ```bash
+# Gerar scanner para Calculadora
+java -jar tools/jflex-full-1.9.1.jar src/calculator/Calc.flex
+
+# Gerar scanner para MiniJava
+java -jar tools/jflex-full-1.9.1.jar src/minijava/MiniJava.flex
+
+# Gerar parser para MiniJava
+java -jar tools/java-cup-11b.jar -parser Parser -symbols sym -destdir src/minijava -expect 2 src/minijava/MiniJava.cup
+
 # Compilar
 javac -cp ".:src:tools/java-cup-11b-runtime.jar" -d bin src/main/Main.java src/minijava/*.java src/calculator/*.java
 
@@ -60,9 +69,18 @@ java -cp "bin:tools/java-cup-11b-runtime.jar" main.Main
 
 ### Windows
 ```bash
-# Compilar
+# Gerar scanner para Calculadora
+java -jar tools/jflex-full-1.9.1.jar src/calculator/Calc.flex
+
+# Gerar scanner para MiniJava
+java -jar tools/jflex-full-1.9.1.jar src/minijava/MiniJava.flex
+
+# Gerar parser para MiniJava
+java -jar tools/java-cup-11b.jar -parser Parser -symbols sym -destdir src/minijava -expect 2 src/minijava/MiniJava.cup
+
+# Compilar (caso necessário)
 javac -cp ".;src;tools/java-cup-11b-runtime.jar" -d bin src/main/Main.java src/minijava/*.java src/calculator/*.java
 
-# Executar
+# Executar Main
 java -cp "bin;tools/java-cup-11b-runtime.jar" main.Main
 ```
