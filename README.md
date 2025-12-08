@@ -2,7 +2,7 @@
 Trabalho da disciplina de Compiladores | prof. Flávia Bernardini | 2025.2 | Instituto de Computação | Universidade Federal Fluminense
 
 ## Pré-requisitos
-- Java JDK 8+
+- Java Open JDK 21
 - Make (já incluído no macOS/Linux)
 - **IntelliJ** como IDE, não é obrigatório, mas é recomendável o seu uso
 
